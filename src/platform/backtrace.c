@@ -7,20 +7,17 @@
 
 #define USE_EXECINFO (defined(__GNUC__) && !defined(__MINGW32__) && !defined(__OpenBSD__) && !defined(__vita__) && !defined(__SWITCH__))
 
-// Only use Windows' StackWalk functions if we're compiling on MSVC or MINGW-W64 (MINGW classic does not include dbghelp.h)
-#define USE_STACKWALK (defined(_WIN32) && (defined(_MSC_VER) || defined(__MINGW64_MAJOR_VERSION)))
-
 #if USE_EXECINFO
 #include <execinfo.h>
 #endif
 
-#if !USE_STACKWALK
+#ifndef USE_STACKWALK
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #endif
 
-#if USE_STACKWALK
+#ifdef USE_STACKWALK
 
 #include <windows.h>
 #include <dbghelp.h>
