@@ -505,7 +505,9 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_mixer REQUIRED)
 
 if(MSVC)
-    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+    if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.12)
+        add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+    endif()
 endif()
 
 if(APPLE)
