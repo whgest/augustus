@@ -36,7 +36,7 @@ install:
   - if [%COMPILER%] == [msvc] 7z x SDL2_mixer-devel-%SDL2_MIXER_VERSION%-VC.zip -oC:\sdl-msvc
 
 before_build:
-  - if [%COMPILER%] == [mingw] set Path=%MINGW_PATH%\bin;%Path%
+  - if [%COMPILER%] == [mingw] set Path=%MINGW_PATH%\mingw32\bin;%Path%
   - if [%COMPILER%] == [mingw-w64] set Path=%MINGW_W64_PATH%\mingw64\bin;%Path%
   - md build
   - cd build
