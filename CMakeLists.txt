@@ -49,6 +49,9 @@ if (CMAKE_COMPILER_IS_GNUCC)
     if (CMAKE_C_COMPILER_VERSION VERSION_GREATER 5.0)
         set(CMAKE_C_FLAGS "-Werror=incompatible-pointer-types -Werror=int-conversion -Wstrict-prototypes ${CMAKE_C_FLAGS}")
     endif()
+    if (WITH_DEBUG_SYMBOLS)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
+    endif()
 endif()
 
 set(PROJECT_VERSION_MAJOR 1)
@@ -147,6 +150,7 @@ set(TINYFD_FILES
 )
 
 set(PLATFORM_FILES
+    ${PROJECT_SOURCE_DIR}/src/platform/backtrace.c
     ${PROJECT_SOURCE_DIR}/src/platform/julius.c
     ${PROJECT_SOURCE_DIR}/src/platform/keyboard_input.c
     ${PROJECT_SOURCE_DIR}/src/platform/log.c
@@ -681,6 +685,9 @@ elseif(SWITCH_BUILD)
 else()
     if (UNIX AND NOT APPLE AND (CMAKE_COMPILER_IS_GNUCC OR CMAKE_C_COMPILER_ID STREQUAL "Clang"))
         target_link_libraries(${SHORT_NAME} m)
+    endif()
+    if (WIN32)
+        target_link_libraries(${SHORT_NAME} dbghelp imagehlp)
     endif()
     target_link_libraries (${SHORT_NAME} ${SDL2_LIBRARY} ${SDL2_MIXER_LIBRARY})
     if(NOT APPLE)

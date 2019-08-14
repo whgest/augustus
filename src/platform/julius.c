@@ -7,6 +7,7 @@
 #include "core/time.h"
 #include "game/game.h"
 #include "input/mouse.h"
+#include "platform/backtrace.h"
 #include "platform/keyboard_input.h"
 #include "platform/prefs.h"
 #include "platform/screen.h"
@@ -16,10 +17,6 @@
 #include "input/hotkey.h"
 
 #include "tinyfiledialogs/tinyfiledialogs.h"
-
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 #ifdef __SWITCH__
 #include "platform/switch/switch_input.h"
@@ -33,10 +30,6 @@
 
 #if defined(_WIN32)
 #include <string.h>
-#endif
-
-#if defined(__GNUC__) && !defined(__MINGW32__) && !defined(__OpenBSD__) && !defined(__vita__) && !defined(__SWITCH__)
-#include <execinfo.h>
 #endif
 
 #ifdef _MSC_VER
@@ -67,23 +60,6 @@ enum {
     USER_EVENT_WINDOWED,
     USER_EVENT_CENTER_WINDOW,
 };
-
-static void handler(int sig) {
-#if defined(__GNUC__) && !defined(__MINGW32__) && !defined(__OpenBSD__) && !defined(__vita__) && !defined(__SWITCH__)
-    void *array[100];
-    size_t size;
-
-    // get void*'s for all entries on the stack
-    size = backtrace(array, 100);
-
-    // print out all the frames to stderr
-    fprintf(stderr, "Error: signal %d:\n", sig);
-    backtrace_symbols_fd(array, size, STDERR_FILENO);
-#else
-    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Oops, crashed with signal %d :(", sig);
-#endif
-    exit(1);
-}
 
 #if defined(_WIN32) || defined(__vita__) || defined(__SWITCH__)
 /* Log to separate file on windows, since we don't have a console there */
@@ -455,7 +431,7 @@ static int pre_init(const char *custom_data_dir)
 
 static void setup(const char *custom_data_dir)
 {
-    signal(SIGSEGV, handler);
+    platform_backtrace_install();
     setup_logging();
 
     SDL_Log("Julius version %s%s\n", JULIUS_VERSION, JULIUS_VERSION_SUFFIX);
