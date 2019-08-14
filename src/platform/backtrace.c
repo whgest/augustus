@@ -1,9 +1,6 @@
 #include "backtrace.h"
 
 #include "SDL.h"
-#ifdef __MINGW32__
-#include <_mingw.h>
-#endif
 
 #define USE_EXECINFO (defined(__GNUC__) && !defined(__MINGW32__) && !defined(__OpenBSD__) && !defined(__vita__) && !defined(__SWITCH__))
 
