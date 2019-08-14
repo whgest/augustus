@@ -21,6 +21,53 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef _WIN64
+static void windows_print_stacktrace(CONTEXT* context)
+{
+    HANDLE process = GetCurrentProcess();
+
+    if (!SymInitialize(process, 0, TRUE)) {
+        return;
+    }
+
+    STACKFRAME64 frame = { 0 };
+    frame.AddrPC.Offset = context->Rip;
+    frame.AddrPC.Mode = AddrModeFlat;
+    frame.AddrStack.Offset = context->Rsp;
+    frame.AddrStack.Mode = AddrModeFlat;
+    frame.AddrFrame.Offset = context->Rbp;
+    frame.AddrFrame.Mode = AddrModeFlat;
+
+    while (StackWalk64(IMAGE_FILE_MACHINE_AMD64, process, GetCurrentThread(), &frame, context, 0, SymFunctionTableAccess64, SymGetModuleBase64, 0)) {
+        // extract data
+        DWORD64 functionAddress = frame.AddrPC.Offset;
+        const char *functionName = 0;
+        const char *fileName = 0;
+        unsigned int lineNumber = 0;
+
+        char symbolBuffer[sizeof(IMAGEHLP_SYMBOL64) + 255];
+        PIMAGEHLP_SYMBOL64 symbol = (PIMAGEHLP_SYMBOL64)symbolBuffer;
+        symbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64) + 255;
+        symbol->MaxNameLength = 254;
+
+        if (SymGetSymFromAddr64(process, frame.AddrPC.Offset, NULL, symbol)) {
+            functionName = symbol->Name;
+        }
+
+        DWORD offset = 0;
+        IMAGEHLP_LINE64 line;
+        line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);
+
+        if (SymGetLineFromAddr64(process, frame.AddrPC.Offset, &offset, &line)) {
+            fileName = line.FileName;
+            lineNumber = line.LineNumber;
+        }
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "  0x%08I64x %s %s (%d)", functionAddress, functionName, fileName, lineNumber);
+    }
+
+    SymCleanup(process);
+}
+#else
 static void windows_print_stacktrace(CONTEXT* context)
 {
     HANDLE process = GetCurrentProcess();
@@ -53,7 +100,7 @@ static void windows_print_stacktrace(CONTEXT* context)
             functionName = symbol->Name;
         }
 
-        DWORD  offset = 0;
+        DWORD offset = 0;
         IMAGEHLP_LINE line;
         line.SizeOfStruct = sizeof(IMAGEHLP_LINE);
 
@@ -64,8 +111,9 @@ static void windows_print_stacktrace(CONTEXT* context)
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "  0x%08I64x %s %s (%d)", functionAddress, functionName, fileName, lineNumber);
     }
 
-    SymCleanup(GetCurrentProcess());
+    SymCleanup(process);
 }
+#endif
 
 static LONG WINAPI windows_exception_handler(EXCEPTION_POINTERS *exceptionInfo)
 {
@@ -76,7 +124,7 @@ static LONG WINAPI windows_exception_handler(EXCEPTION_POINTERS *exceptionInfo)
     SDL_ShowSimpleMessageBox(
         SDL_MESSAGEBOX_ERROR,
         "Julius crashed unexpectedly",
-        "Please open an issue on https://github.com/bvschaik/julius and include julius-log.txt",
+        "Please open an issue at:\nhttps://github.com/bvschaik/julius\n\nand include julius-log.txt",
         NULL
     );
 
@@ -98,7 +146,7 @@ static void handler(int sig) {
     // get void*'s for all entries on the stack
     size = backtrace(array, 100);
 
-    // print out all the frames to stderr
+    // print out all the frames to log
     SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Error: signal %d:", sig);
     char **lines = backtrace_symbols(array, size);
     if (lines) {
