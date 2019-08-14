@@ -4,6 +4,13 @@
 
 #define USE_EXECINFO defined(__GNUC__) && !defined(__MINGW32__) && !defined(__OpenBSD__) && !defined(__vita__) && !defined(__SWITCH__)
 
+// Only use Windows' StackWalk functions if we're compiling on MSVC or MINGW-W64 (MINGW classic does not include dbghelp.h)
+#define USE_STACKWALK defined(_WIN32) && (defined(__MINGW64_VERSION_MAJOR) || defined(_MSVC))
+
+#ifdef __MINGW32__
+#include <_mingw.h>
+#endif
+
 #if USE_EXECINFO
 #include <execinfo.h>
 #endif
@@ -13,7 +20,7 @@
 #include <stdio.h>
 #endif
 
-#ifdef _WIN32
+#ifdef USE_STACKWALK
 
 #include <windows.h>
 #include <dbghelp.h>
@@ -136,7 +143,7 @@ void platform_backtrace_install(void)
     SetUnhandledExceptionFilter(windows_exception_handler);
 }
 
-#else // non-windows
+#else // non-windows or windows without stackwalk
 
 static void handler(int sig) {
 #if USE_EXECINFO
