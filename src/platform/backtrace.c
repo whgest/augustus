@@ -1,26 +1,26 @@
 #include "backtrace.h"
 
 #include "SDL.h"
-
-#define USE_EXECINFO defined(__GNUC__) && !defined(__MINGW32__) && !defined(__OpenBSD__) && !defined(__vita__) && !defined(__SWITCH__)
-
-// Only use Windows' StackWalk functions if we're compiling on MSVC or MINGW-W64 (MINGW classic does not include dbghelp.h)
-#define USE_STACKWALK defined(_WIN32) && (defined(__MINGW64_VERSION_MAJOR) || defined(_MSVC))
-
 #ifdef __MINGW32__
 #include <_mingw.h>
 #endif
+
+#define USE_EXECINFO (defined(__GNUC__) && !defined(__MINGW32__) && !defined(__OpenBSD__) && !defined(__vita__) && !defined(__SWITCH__))
+
+// Only use Windows' StackWalk functions if we're compiling on MSVC or MINGW-W64 (MINGW classic does not include dbghelp.h)
+#define USE_STACKWALK (defined(_WIN32) && (defined(_MSC_VER) || defined(__MINGW64_MAJOR_VERSION)))
 
 #if USE_EXECINFO
 #include <execinfo.h>
 #endif
 
-#ifndef _WIN32
+#if !USE_STACKWALK
 #include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
 #endif
 
-#ifdef USE_STACKWALK
+#if USE_STACKWALK
 
 #include <windows.h>
 #include <dbghelp.h>
