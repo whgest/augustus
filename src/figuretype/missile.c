@@ -68,7 +68,7 @@ static int is_citizen(figure *f)
 {
     if (f->action_state != FIGURE_ACTION_149_CORPSE) {
         if (f->type && f->type != FIGURE_EXPLOSION && f->type != FIGURE_FORT_STANDARD &&
-            f->type != FIGURE_MAP_FLAG && f->type != FIGURE_FLOTSAM && f->type < FIGURE_INDIGENOUS_NATIVE) {
+            f->type != FIGURE_MAP_FLAG && f->type != FIGURE_FLOTSAM && f->type < FIGURE_INDIGENOUS_NATIVE || f->type == FIGURE_FORT_MERCENARY) {
             return f->id;
         }
     }
@@ -162,6 +162,26 @@ void figure_arrow_action(figure *f)
         missile_hit_target(f, target_id, FIGURE_FORT_LEGIONARY);
         sound_effect_play(SOUND_EFFECT_ARROW_HIT);
     } else if (should_die) {
+        f->state = FIGURE_STATE_DEAD;
+    }
+    int dir = (16 + f->direction - 2 * city_view_orientation()) % 16;
+    f->image_id = image_group(GROUP_FIGURE_MISSILE) + 16 + dir;
+}
+
+void figure_friendly_arrow_action(figure* f)
+{
+    f->use_cross_country = 1;
+    f->progress_on_tile++;
+    if (f->progress_on_tile > 120) {
+        f->state = FIGURE_STATE_DEAD;
+    }
+    int should_die = figure_movement_move_ticks_cross_country(f, 4);
+    int target_id = get_non_citizen_on_tile(f->grid_offset);
+    if (target_id) {
+        missile_hit_target(f, target_id, FIGURE_ENEMY_CAESAR_LEGIONARY);
+        sound_effect_play(SOUND_EFFECT_JAVELIN);
+    }
+    else if (should_die) {
         f->state = FIGURE_STATE_DEAD;
     }
     int dir = (16 + f->direction - 2 * city_view_orientation()) % 16;

@@ -162,6 +162,9 @@ const model_building *model_get_building(building_type type)
     if(type == BUILDING_ROADBLOCK) {
         return &MODEL_ROADBLOCK;
     }
+    if (type == BUILDING_FORT_MERCENARIES) {
+        return &buildings[BUILDING_FORT_MOUNTED];
+    }
     return &buildings[type];
 }
 

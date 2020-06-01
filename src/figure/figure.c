@@ -126,7 +126,7 @@ int figure_is_enemy(const figure *f)
 
 int figure_is_legion(const figure *f)
 {
-    return f->type >= FIGURE_FORT_JAVELIN && f->type <= FIGURE_FORT_LEGIONARY;
+    return (f->type >= FIGURE_FORT_JAVELIN && f->type <= FIGURE_FORT_LEGIONARY) || (f->type == FIGURE_FORT_MERCENARY);
 }
 
 int figure_is_herd(const figure *f)

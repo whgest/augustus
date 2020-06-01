@@ -35,7 +35,10 @@ static void add_fort(int type, building *fort)
         fort->subtype.fort_figure_type = FIGURE_FORT_JAVELIN;
     } else if (type == BUILDING_FORT_MOUNTED) {
         fort->subtype.fort_figure_type = FIGURE_FORT_MOUNTED;
+    } else if (type == BUILDING_FORT_MERCENARIES) {
+        fort->subtype.fort_figure_type = FIGURE_FORT_MERCENARY;
     }
+
 
     fort->formation_id = formation_legion_create_for_fort(fort);
     // create parade ground
@@ -481,6 +484,7 @@ static void add_to_map(int type, building *b, int size,
         case BUILDING_FORT_LEGIONARIES:
         case BUILDING_FORT_JAVELIN:
         case BUILDING_FORT_MOUNTED:
+        case BUILDING_FORT_MERCENARIES:
             add_fort(type, b);
             break;
         // native buildings (unused, I think)

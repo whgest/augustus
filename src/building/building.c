@@ -291,7 +291,8 @@ int building_is_fort(building_type type)
 {
     return type == BUILDING_FORT_LEGIONARIES ||
         type == BUILDING_FORT_JAVELIN ||
-        type == BUILDING_FORT_MOUNTED;
+        type == BUILDING_FORT_MOUNTED ||
+        type == BUILDING_FORT_MERCENARIES;
 }
 
 int building_get_highest_id(void)

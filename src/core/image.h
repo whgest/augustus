@@ -69,6 +69,9 @@ int image_load_fonts(encoding_type encoding);
  */
 int image_load_enemy(int enemy_id);
 
+int image_load_archers(void);
+
+
 /**
  * Gets the image id of the first image in the group
  * @param group Image group

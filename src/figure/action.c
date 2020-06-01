@@ -99,8 +99,8 @@ static void (*figure_action_callbacks[])(figure *f) = {
     figure_zebra_action, //70
     figure_spear_action,
     figure_hippodrome_horse_action,
-    figure_nobody_action,
-    figure_nobody_action,
+    figure_soldier_action,
+    figure_friendly_arrow_action,
     figure_nobody_action,
     figure_nobody_action,
     figure_nobody_action,

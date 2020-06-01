@@ -175,6 +175,9 @@ static int draw_background(void)
             case FIGURE_FORT_JAVELIN:
                 lang_text_draw(138, 35, 100 + width, 100 + 44 * i, FONT_NORMAL_GREEN);
                 break;
+            case FIGURE_FORT_MERCENARY:
+                lang_text_draw(138, 35, 100 + width, 100 + 44 * i, FONT_NORMAL_GREEN);
+                break;
         }
         lang_text_draw_centered(138, 37 + m->morale / 5, 240, 91 + 44 * i, 150, FONT_NORMAL_GREEN);
 

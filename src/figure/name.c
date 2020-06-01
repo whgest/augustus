@@ -137,6 +137,10 @@ int figure_name_get(figure_type type, enemy_type enemy)
     case FIGURE_NATIVE_TRADER:
         return get_next_name(&data.barbarian, 430, 32);
 
+
+    case FIGURE_FORT_MERCENARY:
+        return get_next_name(&data.barbarian, 430, 32);
+
     case FIGURE_ENEMY43_SPEAR:
     case FIGURE_ENEMY44_SWORD:
     case FIGURE_ENEMY45_SWORD:

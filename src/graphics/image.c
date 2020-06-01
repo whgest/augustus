@@ -566,6 +566,18 @@ void image_draw(int image_id, int x, int y)
     }
 }
 
+void image_draw_archer(int image_id, int x, int y)
+{
+    if (image_id <= 0 || image_id >= 801) {
+        return;
+    }
+    const image* img = image_get_archers(image_id);
+    const color_t* data = image_data_archers(image_id);
+    if (data) {
+        draw_compressed(img, data, x, y, img->height);
+    }
+}
+
 void image_draw_enemy(int image_id, int x, int y)
 {
     if (image_id <= 0 || image_id >= 801) {

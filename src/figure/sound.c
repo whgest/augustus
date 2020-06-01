@@ -40,6 +40,7 @@ void figure_play_die_sound(const figure *f)
         case FIGURE_FORT_JAVELIN:
         case FIGURE_FORT_MOUNTED:
         case FIGURE_FORT_LEGIONARY:
+        case FIGURE_FORT_MERCENARY:
         case FIGURE_GLADIATOR:
         case FIGURE_INDIGENOUS_NATIVE:
         case FIGURE_TOWER_SENTRY:
@@ -113,6 +114,7 @@ void figure_play_hit_sound(figure_type type)
             }
             break;
         case FIGURE_ENEMY53_AXE:
+        case FIGURE_FORT_MERCENARY:
             if (city_sound_update_hit_axe()) {
                 sound_effect_play(SOUND_EFFECT_AXE);
             }

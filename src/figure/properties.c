@@ -1,5 +1,6 @@
 #include "properties.h"
 
+
 static const figure_properties properties[] = {
 //  cat  dmg  atk  def Mdef Matk Mfrq
     {0,   0,   0,   0,   0,   0,   0},
@@ -75,13 +76,16 @@ static const figure_properties properties[] = {
     {6,  20,   0,   0,   0,   0,   0},
     {0, 100,   0,   0,   0,  10,   0},
     {0, 100,   0,   0,   0,   0,   0},
+    {2, 60,    5,   0,   0,   0,  60},
+    {0, 100,   0,   0,   0,  12,   0},
     {0, 100,   0,   0,   0,   0,   0},
     {0, 100,   0,   0,   0,   0,   0},
     {0, 100,   0,   0,   0,   0,   0},
     {0, 100,   0,   0,   0,   0,   0},
     {0, 100,   0,   0,   0,   0,   0},
     {0, 100,   0,   0,   0,   0,   0},
-    {0, 100,   0,   0,   0,   0,   0}
+    {0, 100,   0,   0,   0,   0,   0},
+
 };
 
 const figure_properties *figure_properties_for_type(figure_type type)

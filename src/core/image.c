@@ -125,10 +125,12 @@ static struct {
     char bitmaps[100][200];
     image main[MAIN_ENTRIES];
     image enemy[ENEMY_ENTRIES];
+    image archers[ENEMY_ENTRIES];
     image *font;
     color_t *main_data;
     color_t *empire_data;
     color_t *enemy_data;
+    color_t* archers_data;
     color_t *font_data;
     uint8_t *tmp_data;
 } data = {.current_climate = -1};
@@ -169,13 +171,15 @@ static color_t roadblock_data[900] = { 0xa4180f, 0xa71f15
 int image_init(void)
 {
     data.enemy_data = (color_t *) malloc(ENEMY_DATA_SIZE);
+    data.archers_data = (color_t*)malloc(ENEMY_DATA_SIZE);
     data.main_data = (color_t *) malloc(MAIN_DATA_SIZE);
     data.empire_data = (color_t *) malloc(EMPIRE_DATA_SIZE);
     data.tmp_data = (uint8_t *) malloc(SCRATCH_DATA_SIZE);
-    if (!data.main_data || !data.empire_data || !data.enemy_data || !data.tmp_data) {
+    if (!data.main_data || !data.empire_data || !data.archers_data || !data.enemy_data || !data.tmp_data) {
         free(data.main_data);
         free(data.empire_data);
         free(data.enemy_data);
+        free(data.archers_data);
         free(data.tmp_data);
         return 0;
     }
@@ -563,6 +567,30 @@ int image_load_enemy(int enemy_id)
     return 1;
 }
 
+int image_load_archers(void)
+{
+    int enemy_id = 7;
+    const char* filename_bmp = ENEMY_GRAPHICS_555[enemy_id];
+    const char* filename_idx = ENEMY_GRAPHICS_SG2[enemy_id];
+
+    if (ENEMY_INDEX_SIZE != io_read_file_part_into_buffer(filename_idx, MAY_BE_LOCALIZED, data.tmp_data, ENEMY_INDEX_SIZE, ENEMY_INDEX_OFFSET)) {
+        return 0;
+    }
+
+    buffer buf;
+    buffer_init(&buf, data.tmp_data, ENEMY_INDEX_SIZE);
+    read_index(&buf, data.archers, ENEMY_ENTRIES);
+
+    int data_size = io_read_file_into_buffer(filename_bmp, MAY_BE_LOCALIZED, data.tmp_data, SCRATCH_DATA_SIZE);
+    if (!data_size) {
+        return 0;
+    }
+
+    buffer_init(&buf, data.tmp_data, data_size);
+    convert_images(data.archers, ENEMY_ENTRIES, &buf, data.archers_data);
+    return 1;
+}
+
 static const color_t *load_external_data(int image_id)
 {
     image *img = &data.main[image_id];
@@ -639,6 +667,16 @@ const image *image_get_enemy(int id)
     }
 }
 
+const image* image_get_archers(int id)
+{
+    if (id >= 0 && id < ENEMY_ENTRIES) {
+        return &data.archers[id];
+    }
+    else {
+        return NULL;
+    }
+}
+
 const color_t *image_data(int id)
 {
     if (id == 10000) {
@@ -674,6 +712,14 @@ const color_t *image_data_enemy(int id)
 {
     if (data.enemy[id].draw.offset > 0) {
         return &data.enemy_data[data.enemy[id].draw.offset];
+    }
+    return NULL;
+}
+
+const color_t* image_data_archers(int id)
+{
+    if (data.archers[id].draw.offset > 0) {
+        return &data.archers_data[data.archers[id].draw.offset];
     }
     return NULL;
 }
