@@ -346,13 +346,22 @@ static int draw_background(void)
     bot_graph(0, 505, 163);
 
     // food/migration info panel
-    inner_panel_draw(48, 336, 34, 5);
+    inner_panel_draw(48, 320, 34, 6);
     int image_id = image_group(GROUP_BULLET);
     int width;
+    image_draw(image_id, 56, 326);
     image_draw(image_id, 56, 344);
     image_draw(image_id, 56, 362);
     image_draw(image_id, 56, 380);
     image_draw(image_id, 56, 398);
+
+    // housing
+    //width = lang_text_draw(55, 16, 75, 360, FONT_NORMAL_WHITE);
+
+    
+
+    width = text_draw_number(city_population_open_housing_capacity(), '@', " available of", 70, 326, FONT_NORMAL_WHITE);
+    text_draw_number(city_population_total_housing_capacity(), '@', " total housing capacity", 70 + width, 326, FONT_NORMAL_WHITE);
 
     // food stores
     if (scenario_property_rome_supplies_wheat()) {
@@ -372,8 +381,8 @@ static int draw_background(void)
     }
 
     // food types eaten
-    width = lang_text_draw(55, 16, 75, 360, FONT_NORMAL_WHITE);
-    text_draw_number(city_resource_food_types_available(), '@', " ", 75 + width, 360, FONT_NORMAL_WHITE);
+     width = lang_text_draw(55, 16, 75, 360, FONT_NORMAL_WHITE);
+     text_draw_number(city_resource_food_types_available(), '@', " ", 75 + width, 360, FONT_NORMAL_WHITE);
 
     // immigration
     int newcomers = city_migration_newcomers();
@@ -408,6 +417,9 @@ static int draw_background(void)
             lang_text_draw(55, 17, 75 + width, 396, FONT_NORMAL_WHITE);
         }
     }
+
+
+
 
     return ADVISOR_HEIGHT;
 }

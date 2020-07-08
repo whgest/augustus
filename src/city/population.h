@@ -4,6 +4,8 @@
 int city_population(void);
 int city_population_school_age(void);
 int city_population_academy_age(void);
+int city_population_total_housing_capacity(void);
+int city_population_open_housing_capacity(void);
 
 int city_population_last_used_house_add(void);
 void city_population_set_last_used_house_add(int building_id);
