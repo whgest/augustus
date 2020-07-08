@@ -14,6 +14,8 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+#include <time.h>
 
 typedef struct {
     int *action;
@@ -280,6 +282,44 @@ static void add_definition(const hotkey_mapping *mapping)
         case HOTKEY_BUILD_ROADBLOCK:
             def->action = &data.hotkey_state.building;
             def->value = BUILDING_ROADBLOCK;
+            break;
+        case HOTKEY_BUILD_FORUM:
+            def->action = &data.hotkey_state.building;
+            def->value = BUILDING_FORUM;
+            break;
+        case HOTKEY_BUILD_BARBER:
+            def->action = &data.hotkey_state.building;
+            def->value = BUILDING_BARBER;
+            break;
+        case HOTKEY_BUILD_BATHHOUSE:
+            def->action = &data.hotkey_state.building;
+            def->value = BUILDING_BATHHOUSE;
+            break;
+        case HOTKEY_BUILD_SCHOOL:
+            def->action = &data.hotkey_state.building;
+            def->value = BUILDING_SCHOOL;
+            break;
+        case HOTKEY_BUILD_LIBRARY:
+            def->action = &data.hotkey_state.building;
+            def->value = BUILDING_LIBRARY;
+            break;
+        case HOTKEY_BUILD_THEATER:
+            def->action = &data.hotkey_state.building;
+            def->value = BUILDING_THEATER;
+            break;
+        case HOTKEY_BUILD_SMALL_STATUE:
+            def->action = &data.hotkey_state.building;
+            def->value = BUILDING_SMALL_STATUE;
+            break;
+        case HOTKEY_BUILD_RANDOM_TEMPLE:
+            def->action = &data.hotkey_state.building;
+
+            int temples[] = {BUILDING_SMALL_TEMPLE_CERES, BUILDING_SMALL_TEMPLE_NEPTUNE, BUILDING_SMALL_TEMPLE_MERCURY, BUILDING_SMALL_TEMPLE_MARS, BUILDING_SMALL_TEMPLE_VENUS};
+            time_t t;
+            srand((unsigned)time(&t));
+
+            def->action = &data.hotkey_state.building;
+            def->value = temples[rand()%5];
             break;
         default:
             def->action = 0;
