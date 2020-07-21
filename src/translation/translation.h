@@ -106,6 +106,7 @@ typedef enum {
     TR_HOTKEY_SHOW_ADVISOR_RELIGION,
     TR_HOTKEY_SHOW_ADVISOR_FINANCIAL,
     TR_HOTKEY_SHOW_ADVISOR_CHIEF,
+    TR_HOTKEY_SHOW_ADVISOR_HOUSING,
     TR_HOTKEY_TOGGLE_OVERLAY,
     TR_HOTKEY_SHOW_OVERLAY_WATER,
     TR_HOTKEY_SHOW_OVERLAY_FIRE,
@@ -125,6 +126,27 @@ typedef enum {
     TR_HOTKEY_EDIT_TITLE,
     TR_BUILDING_ROADBLOCK,
     TR_BUILDING_ROADBLOCK_DESC,
+    TR_HEADER_HOUSING,
+    TR_ADVISOR_HOUSING_ROOM,
+    TR_ADVISOR_HOUSING_NO_ROOM,
+    TR_ADVISOR_RESIDENCES_DEMANDING_POTTERY,
+    TR_ADVISOR_RESIDENCES_DEMANDING_FURNITURE,
+    TR_ADVISOR_RESIDENCES_DEMANDING_OIL,
+    TR_ADVISOR_RESIDENCES_DEMANDING_WINE,
+    TR_ADVISOR_TOTAL_NUM_HOUSES,
+    TR_ADVISOR_AVAILABLE_HOUSING_CAPACITY,
+    TR_ADVISOR_TOTAL_HOUSING_CAPACITY,
+    TR_ADVISOR_ADVISOR_HEADER_HOUSING,
+    TR_ADVISOR_BUTTON_GRAPHS,
+    TR_ADVISOR_HOUSING_PROSPERITY_RATING,
+    TR_ADVISOR_PERCENTAGE_IN_VILLAS_PALACES,
+    TR_ADVISOR_PERCENTAGE_IN_TENTS_SHACKS,
+    TR_ADVISOR_AVERAGE_TAX,
+    TR_ADVISOR_AVERAGE_AGE,
+    TR_ADVISOR_PERCENT_IN_WORKFORCE,
+    TR_ADVISOR_BIRTHS_LAST_YEAR,
+    TR_ADVISOR_DEATHS_LAST_YEAR,
+    TR_ADVISOR_TOTAL_POPULATION,
     TRANSLATION_MAX_KEY
 } translation_key;
 
@@ -145,6 +167,7 @@ void translation_polish(const translation_string **strings, int *num_strings);
 void translation_portuguese(const translation_string **strings, int *num_strings);
 void translation_russian(const translation_string **strings, int *num_strings);
 void translation_spanish(const translation_string **strings, int *num_strings);
+void translation_simplified_chinese(const translation_string **strings, int *num_strings);
 void translation_traditional_chinese(const translation_string **strings, int *num_strings);
 
 #endif // TRANSLATION_TRANSLATION_H
