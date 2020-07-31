@@ -46,15 +46,6 @@ int city_population_last_used_house_add(void)
     return city_data.population.last_used_house_add;
 }
 
-int city_population_total_housing_capacity(void)
-{
-    return city_data.population.total_capacity;
-}
-
-int city_population_open_housing_capacity(void)
-{
-    return city_data.population.room_in_houses;
-}
 
 void city_population_set_last_used_house_add(int building_id)
 {
