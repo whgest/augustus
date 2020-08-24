@@ -19,7 +19,7 @@ int building_is_farm(building_type type)
 
 int building_is_workshop(building_type type)
 {
-    return type >= BUILDING_WINE_WORKSHOP && type <= BUILDING_POTTERY_WORKSHOP;
+    return (type >= BUILDING_WINE_WORKSHOP && type <= BUILDING_POTTERY_WORKSHOP) || type == BUILDING_CHARIOT_MAKER;
 }
 
 static int max_progress(const building *b)
@@ -38,9 +38,12 @@ void building_industry_update_production(void)
 {
     for (int i = 1; i < MAX_BUILDINGS; i++) {
         building *b = building_get(i);
-        if (b->state != BUILDING_STATE_IN_USE || !b->output_resource_id) {
+        if (b->state != BUILDING_STATE_IN_USE) {
             continue;
         }
+        if (!b->output_resource_id && !building_is_workshop(b->type)) {
+            continue;  
+		}
         b->data.industry.has_raw_materials = 0;
         if (b->houses_covered <= 0 || b->num_workers <= 0) {
             continue;

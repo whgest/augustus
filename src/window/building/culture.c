@@ -4,6 +4,7 @@
 #include "graphics/image.h"
 #include "graphics/lang_text.h"
 #include "graphics/panel.h"
+#include "window/building/industry.h"
 
 static void draw_culture_info(building_info_context *c, int help_id, const char *sound_file, int group_id)
 {
@@ -306,5 +307,5 @@ void window_building_draw_lion_house(building_info_context *c)
 
 void window_building_draw_chariot_maker(building_info_context *c)
 {
-    draw_entertainment_school(c, "wavs/char_pit.wav", 78);
+    draw_workshop(c, 96, "wavs/char_pit.wav", 78, 10, 10);
 }

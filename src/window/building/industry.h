@@ -3,6 +3,8 @@
 
 #include "common.h"
 
+void draw_workshop(building_info_context *c, int help_id, const char *sound_file, int group_id, int resource, int input_resource);
+
 void window_building_draw_wheat_farm(building_info_context *c);
 void window_building_draw_vegetable_farm(building_info_context *c);
 void window_building_draw_fruit_farm(building_info_context *c);

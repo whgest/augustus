@@ -162,6 +162,9 @@ building *building_create(building_type type, int x, int y)
             b->output_resource_id = RESOURCE_POTTERY;
             b->subtype.workshop_type = WORKSHOP_CLAY_TO_POTTERY;
             break;
+        case BUILDING_CHARIOT_MAKER:
+            b->subtype.workshop_type = CHARIOT_MAKER_CONSUMES_TIMBER;
+            break;
         default:
             b->output_resource_id = RESOURCE_NONE;
             break;

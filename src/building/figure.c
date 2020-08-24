@@ -366,6 +366,7 @@ static void spawn_figure_lion_house(building *b)
 static void spawn_figure_chariot_maker(building *b)
 {
     check_labor_problem(b);
+    building_industry_start_new_production(b);
     map_point road;
     if (map_has_road_access(b->x, b->y, b->size, &road)) {
         spawn_labor_seeker(b, road.x, road.y, 50);
