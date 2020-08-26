@@ -99,6 +99,7 @@ static int get_height_id(void)
             case BUILDING_ORACLE:
             case BUILDING_SMALL_STATUE:
             case BUILDING_MEDIUM_STATUE:
+            case BUILDING_SMALL_POND:
             case BUILDING_LARGE_STATUE:
             case BUILDING_GLADIATOR_SCHOOL:
             case BUILDING_LION_HOUSE:
@@ -528,7 +529,7 @@ static void draw_background(void)
             window_building_draw_fountain(&context);
         } else if (btype == BUILDING_WELL) {
             window_building_draw_well(&context);
-        } else if (btype == BUILDING_SMALL_STATUE || btype == BUILDING_MEDIUM_STATUE || btype == BUILDING_LARGE_STATUE) {
+        } else if (btype == BUILDING_SMALL_STATUE || btype == BUILDING_MEDIUM_STATUE || btype == BUILDING_LARGE_STATUE || btype == BUILDING_SMALL_POND) {
             window_building_draw_statue(&context);
         } else if (btype == BUILDING_TRIUMPHAL_ARCH) {
             window_building_draw_triumphal_arch(&context);

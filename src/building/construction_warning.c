@@ -33,6 +33,7 @@ static void check_road_access(int type, int x, int y, int size)
     switch (type) {
         case BUILDING_SMALL_STATUE:
         case BUILDING_MEDIUM_STATUE:
+        case BUILDING_SMALL_POND:
         case BUILDING_LARGE_STATUE:
         case BUILDING_FOUNTAIN:
         case BUILDING_WELL:

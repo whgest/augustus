@@ -168,8 +168,12 @@ const uint8_t *lang_get_string(int group, int index)
         return translation_for(TR_BUILDING_ROADBLOCK);
     }
     if ((group == 28) && (index == 116)) {
-        return translation_for(TR_BUILDING_ROADBLOCK_DESC);
+        return translation_for(TR_BUILDING_MENU_AESTHETICS);
     }
+    if ((group == 28) && (index == 117)) {
+        return translation_for(TR_BUILDING_SMALL_POND);
+    }
+
     const uint8_t *str = &data.text_data[data.text_entries[group].offset];
     uint8_t prev = 0;
     while (index > 0) {

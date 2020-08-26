@@ -61,6 +61,7 @@ int scenario_building_allowed(int building_type)
         case BUILDING_SMALL_STATUE:
         case BUILDING_MEDIUM_STATUE:
         case BUILDING_LARGE_STATUE:
+        case BUILDING_SMALL_POND:
             return scenario.allowed_buildings[ALLOWED_BUILDING_STATUES];
         case BUILDING_GARDENS:
             return scenario.allowed_buildings[ALLOWED_BUILDING_GARDENS];

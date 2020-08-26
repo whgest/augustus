@@ -153,6 +153,11 @@ const building_properties *building_properties_for_type(building_type type)
     if (type == 115){
         return &properties[38];
     }
+
+    if (type == 117){
+        return &properties[42];
+    }
+
     return &properties[type];
 }
 

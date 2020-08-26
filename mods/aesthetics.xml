@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+<!DOCTYPE mod>
+<mod author="Areldir" name="Aesthetics">
+
+
+<!-- Note: Assets for 'Ornamental Pine Tree', 'Ornamental Fir Tree', 'Ornamental Oak Tree', 'Ornamental Elm Tree', 'Ornamental Fig Tree', 'Ornamental Plum Tree', 'Ornamental Palm Tree' and 'Ornamental Date Tree' respectively -->
+    <image id="ornamental pine" >
+		<layer group="59" image="0" />
+		<layer src="Ornamental_Tree_01_Top_Layer" />
+    </image>
+
+    <image id="ornamental fir" width="58" height="62">
+		<layer group="59" image="2" x="0" y="30" />
+		<layer src="Ornamental_Tree_06_Top_Layer" x="0" y="0" />
+    </image>
+
+    <image id="ornamental oak" width="58" height="55">
+		<layer group="59" image="2" x="0" y="23" />
+		<layer src="Ornamental_Tree_02_Top_Layer" x="0" y="0" />
+    </image>
+
+    <image id="ornamental elm" width="58" height="55">
+		<layer group="59" image="2" x="0" y="23" />
+		<layer src="Ornamental_Tree_07_Top_Layer" x="0" y="0" />
+    </image>
+
+    <image id="ornamental fig" width="58" height="55">
+		<layer group="59" image="2" x="0" y="23" />
+		<layer src="Ornamental_Tree_03_Top_Layer" x="0" y="0" />
+    </image>
+
+    <image id="ornamental plum" width="58" height="55">
+		<layer group="59" image="2" x="0" y="23" />
+		<layer src="Ornamental_Tree_08_Top_Layer" x="0" y="0" />
+    </image>
+
+    <image id="ornamental palm" width="58" height="54">
+		<layer group="59" image="2" x="0" y="22" />
+		<layer src="Ornamental_Tree_04_Top_Layer" x="0" y="0" />
+    </image>
+
+    <image id="ornamental date" width="58" height="54">
+		<layer group="59" image="2" x="0" y="22" />
+		<layer src="Ornamental_Tree_05_Top_Layer" x="0" y="0" />
+    </image>
+
+
+<!-- Note: Assets for 'Ornamental Blue Pavilion', 'Ornamental Red Pavilion', 'Ornamental Orange Pavilion' and 'Ornamental Yellow Pavilion' respectively -->
+    <image id="pavilion blue" >
+		<layer group="59" image="2" />
+		<layer src="Pavilion_Blue" x="18" y="0" />
+    </image>
+
+    <image id="pavilion red" >
+		<layer group="59" image="2" />
+		<layer src="Pavilion_Red" x="18" y="0" />
+    </image>
+
+    <image id="pavilion orange" >
+		<layer group="59" image="2" />
+		<layer src="Pavilion_Orange" x="18" y="0" />
+    </image>
+
+    <image id="pavilion yellow" >
+		<layer group="59" image="2" />
+		<layer src="Pavilion_Yellow" x="18" y="0" />
+    </image>
+
+
+<!-- Note: Small pond OFF and ON variants respectively FOR NORTHERN AND CENTRAL CLIMATES -->
+    <image id="s pond north off" >
+		<layer src="2x2_Pond_A_OFF" />
+    </image>
+
+    <image id="s pond north on" >
+		<layer group="this" image="s pond north off" />
+        <animation speed="8" frames="8" x="0" y="15" reversible="false" />
+    </image>
+    <image src="2x2_Pond_A_01" />
+    <image src="2x2_Pond_A_02" />
+    <image src="2x2_Pond_A_03" />
+    <image src="2x2_Pond_A_04" />
+    <image src="2x2_Pond_A_05" />
+    <image src="2x2_Pond_A_06" />
+    <image src="2x2_Pond_A_07" />
+    <image src="2x2_Pond_A_08" />
+
+
+<!-- Note: Small pond OFF and ON variants respectively FOR SOUTHERN CLIMATES -->
+    <image id="s pond south off" >
+		<layer src="2x2_Pond_B_OFF" />
+    </image>
+
+    <image id="s pond south on" >
+		<layer group="this" image="s pond south off" />
+        <animation speed="8" frames="8" x="0" y="15" reversible="false" />
+    </image>
+    <image src="2x2_Pond_B_01" />
+    <image src="2x2_Pond_B_02" />
+    <image src="2x2_Pond_B_03" />
+    <image src="2x2_Pond_B_04" />
+    <image src="2x2_Pond_B_05" />
+    <image src="2x2_Pond_B_06" />
+    <image src="2x2_Pond_B_07" />
+    <image src="2x2_Pond_B_08" />
+
+
+<!-- Note: Large pond OFF and ON variants respectively FOR NORTHERN AND CENTRAL CLIMATES -->
+    <image id="l pond north off" >
+		<layer src="3x3_Pond_A_Off" />
+    </image>
+
+
+    <image id="l pond north on" >
+		<layer group="this" image="l pond north off" />
+        <animation speed="8" frames="8" x="0" y="30" reversible="false" />
+    </image>
+    <image src="3x3_Pond_A_01" />
+    <image src="3x3_Pond_A_02" />
+    <image src="3x3_Pond_A_03" />
+    <image src="3x3_Pond_A_04" />
+    <image src="3x3_Pond_A_05" />
+    <image src="3x3_Pond_A_06" />
+    <image src="3x3_Pond_A_07" />
+    <image src="3x3_Pond_A_08" />
+
+
+<!-- Note: Large pond OFF and ON variants respectively FOR SOUTHERN CLIMATES -->
+    <image id="l pond south off" >
+		<layer src="3x3_Pond_B_Off" />
+    </image>
+
+
+    <image id="l pond south on" >
+		<layer group="this" image="l pond south off" />
+        <animation speed="8" frames="8" x="0" y="30" reversible="false" />
+    </image>
+    <image src="3x3_Pond_B_01" />
+    <image src="3x3_Pond_B_02" />
+    <image src="3x3_Pond_B_03" />
+    <image src="3x3_Pond_B_04" />
+    <image src="3x3_Pond_B_05" />
+    <image src="3x3_Pond_B_06" />
+    <image src="3x3_Pond_B_07" />
+    <image src="3x3_Pond_B_08" />
+
+	
+</mod>

@@ -15,6 +15,7 @@
 #include "core/config.h"
 #include "core/image.h"
 #include "core/mods.h"
+#include "core/log.h"
 #include "core/random.h"
 #include "figure/formation_legion.h"
 #include "game/undo.h"
@@ -266,6 +267,12 @@ static void add_to_map(int type, building *b, int size,
         case BUILDING_LARGE_STATUE:
             add_building(b, image_group(GROUP_BUILDING_STATUE) + 2);
             break;
+        case BUILDING_SMALL_POND:
+            //probs need to log this and roadblock to figure this out
+            log_info("pond id:", "",  mods_get_image_id(mods_get_group_id("Areldir", "Aesthetics"), "1"));
+            log_info("pond group id:", "",  mods_get_group_id("Areldir", "Aesthetics"));
+            add_building(b,  mods_get_image_id(mods_get_group_id("Areldir", "Aesthetics"), "1"));
+            break;
         // health
         case BUILDING_DOCTOR:
             add_building(b, image_group(GROUP_BUILDING_DOCTOR));
@@ -415,6 +422,8 @@ static void add_to_map(int type, building *b, int size,
             add_building(b, image_group(GROUP_BUILDING_ORACLE));
             break;
         case BUILDING_ROADBLOCK:
+            log_info("rb group id:", "",  mods_get_group_id("Keriew", "Roadblocks"));
+
             add_building(b, mods_get_group_id("Keriew", "Roadblocks"));
             map_terrain_add_roadblock_road(b->x, b->y, orientation);	    
             map_tiles_update_area_roads(b->x, b->y, 5);
