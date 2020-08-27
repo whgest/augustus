@@ -157,10 +157,25 @@ int model_load(void)
 const model_building MODEL_ROADBLOCK = {40,0,0,0,0};
 
 const model_building *model_get_building(building_type type)
-{
+{   
+    // todo: needs a mapping or something
+    
     if(type == BUILDING_ROADBLOCK) {
         return &MODEL_ROADBLOCK;
     }
+
+    if(type == BUILDING_SMALL_POND) {
+        return &buildings[42];
+    }
+
+    if(type == BUILDING_PAVILION_BLUE) {
+        return &buildings[41];
+    }
+
+    if(type == BUILDING_LARGE_POND) {
+        return &buildings[43];
+    }
+
     return &buildings[type];
 }
 

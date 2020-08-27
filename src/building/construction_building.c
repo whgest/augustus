@@ -268,10 +268,16 @@ static void add_to_map(int type, building *b, int size,
             add_building(b, image_group(GROUP_BUILDING_STATUE) + 2);
             break;
         case BUILDING_SMALL_POND:
-            //probs need to log this and roadblock to figure this out
-            log_info("pond id:", "",  mods_get_image_id(mods_get_group_id("Areldir", "Aesthetics"), "1"));
-            log_info("pond group id:", "",  mods_get_group_id("Areldir", "Aesthetics"));
-            add_building(b,  mods_get_image_id(mods_get_group_id("Areldir", "Aesthetics"), "1"));
+            log_info("s pond group", "", mods_get_group_id("Areldir", "Aesthetics"));
+            add_building(b,  mods_get_group_id("Areldir", "Aesthetics") + 13);
+            break;
+        case BUILDING_PAVILION_BLUE:
+            add_building(b,  mods_get_group_id("Areldir", "Aesthetics") + 8);
+            break;
+        case BUILDING_LARGE_POND:
+            //add_building(b,  mods_get_group_id("Areldir", "Aesthetics") + 31);
+            add_building(b,  mods_get_image_id(mods_get_group_id("Areldir", "Aesthetics"), "l pond north on"));          
+            log_info("l pond id", "", mods_get_image_id(mods_get_group_id("Areldir", "Aesthetics"), "l pond north on"));
             break;
         // health
         case BUILDING_DOCTOR:
@@ -422,8 +428,7 @@ static void add_to_map(int type, building *b, int size,
             add_building(b, image_group(GROUP_BUILDING_ORACLE));
             break;
         case BUILDING_ROADBLOCK:
-            log_info("rb group id:", "",  mods_get_group_id("Keriew", "Roadblocks"));
-
+            log_info("roadblock", "", mods_get_group_id("Keriew", "Roadblocks"));
             add_building(b, mods_get_group_id("Keriew", "Roadblocks"));
             map_terrain_add_roadblock_road(b->x, b->y, orientation);	    
             map_tiles_update_area_roads(b->x, b->y, 5);

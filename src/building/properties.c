@@ -1,4 +1,5 @@
 #include "properties.h"
+#include "core/mods.h"
 
 static building_properties properties[140] = {
 // SZ FIRE GRP OFF
@@ -144,18 +145,29 @@ static building_properties properties[140] = {
     {0, 0,   0, 0}
 };
 
-
-building_properties ROADBLOCK_PROPERTIES = { 1, 1 , 10000, 0 };
+//todo: need help to figure how to unhardcode these values
+building_properties ROADBLOCK_PROPERTIES = { 1, 1 , 10052, 0 };
+building_properties SMALL_POND_PROPERTIES = { 2, 1, 10000, 13 };
+building_properties LARGE_POND_PROPERTIES = {3, 1, 10000, 33 };
+building_properties BLUE_PAVILION_PROPERTIES = { 1, 1, 10000, 8 };
 
 const building_properties *building_properties_for_type(building_type type)
 {
     // Roadblock properties, as plaza
     if (type == 115){
-        return &properties[38];
+        return &ROADBLOCK_PROPERTIES;
     }
 
     if (type == 117){
-        return &properties[42];
+        return &SMALL_POND_PROPERTIES;
+    }
+
+    if (type == 118){
+        return &BLUE_PAVILION_PROPERTIES;
+    }
+
+    if (type == 119){
+        return &LARGE_POND_PROPERTIES;
     }
 
     return &properties[type];

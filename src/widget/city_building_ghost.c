@@ -9,6 +9,8 @@
 #include "city/finance.h"
 #include "city/view.h"
 #include "core/config.h"
+#include "core/config.h"
+#include "core/log.h"
 #include "figure/formation.h"
 #include "graphics/image.h"
 #include "input/scroll.h"
@@ -190,8 +192,16 @@ static void draw_regular_building(building_type type, int image_id, int x, int y
 }
 
 static int get_building_image_id(int map_x, int map_y, building_type type, const building_properties *props)
-{
-    int image_id = image_group(props->image_group) + props->image_offset;
+{   int image_id;
+    if (props->image_group >= 10000) {
+        image_id = props->image_group + props->image_offset;
+	} else {
+        image_id = image_group(props->image_group) + props->image_offset;
+    }
+
+    log_info("image group for ghost", "", props->image_group);
+    log_info("image id for ghost", "", image_id);
+
     if (type == BUILDING_GATEHOUSE) {
         int orientation = map_orientation_for_gatehouse(map_x, map_y);
         int image_offset;

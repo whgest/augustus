@@ -157,7 +157,8 @@ static translation_string all_strings[] = {
     {TR_ADVISOR_TOTAL_POPULATION, "residents total"},
     {TR_BUILDING_MENU_AESTHETICS, "Aesthetics"},
     {TR_BUILDING_SMALL_POND, "Small pond"},
-    {TR_BUILDING_SMALL_POND_DESC, "Water, in a hole."},
+    {TR_BUILDING_LARGE_POND, "Large pond"},
+    {TR_BUILDING_PAVILION_BLUE, "Blue pavilion"},
 };
 
 void translation_english(const translation_string **strings, int *num_strings)
