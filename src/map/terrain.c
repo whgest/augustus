@@ -24,6 +24,8 @@ void map_terrain_set(int grid_offset, int terrain)
 
 void map_terrain_add(int grid_offset, int terrain)
 {
+    int val = terrain_grid.items[grid_offset];
+    int result = terrain_grid.items[grid_offset] | terrain;
     terrain_grid.items[grid_offset] |= terrain;
 }
 

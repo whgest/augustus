@@ -158,7 +158,18 @@ static translation_string all_strings[] = {
     {TR_BUILDING_MENU_AESTHETICS, "Aesthetics"},
     {TR_BUILDING_SMALL_POND, "Small pond"},
     {TR_BUILDING_LARGE_POND, "Large pond"},
-    {TR_BUILDING_PAVILION_BLUE, "Blue pavilion"},
+    {TR_BUILDING_PINE_TREE, "Pine tree"},
+    { TR_BUILDING_FIR_TREE, "Fir tree" },
+    {TR_BUILDING_OAK_TREE, "Oak tree" },
+    {TR_BUILDING_ELM_TREE, "Elm tree" },
+    {TR_BUILDING_FIG_TREE, "Fig tree" },
+    {TR_BUILDING_PLUM_TREE, "Plum tree" },
+    {TR_BUILDING_PALM_TREE, "Palm tree" },
+    {TR_BUILDING_DATE_TREE, "Date tree" },
+    {TR_BUILDING_BLUE_PAVILION, "Blue pavilion" },
+    {TR_BUILDING_RED_PAVILION, "Red pavilion"},
+    {TR_BUILDING_ORANGE_PAVILION, "Orange pavilion"},
+    {TR_BUILDING_YELLOW_PAVILION, "Yellow pavilion"}
 };
 
 void translation_english(const translation_string **strings, int *num_strings)

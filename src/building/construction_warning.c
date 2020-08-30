@@ -35,11 +35,18 @@ static void check_road_access(int type, int x, int y, int size)
         case BUILDING_MEDIUM_STATUE:
         case BUILDING_SMALL_POND:
         case BUILDING_LARGE_POND:
+        case BUILDING_PINE_TREE:
+        case BUILDING_FIR_TREE:
+        case BUILDING_OAK_TREE:
+        case BUILDING_ELM_TREE:
+        case BUILDING_FIG_TREE:
+        case BUILDING_PLUM_TREE:
+        case BUILDING_PALM_TREE:
+        case BUILDING_DATE_TREE:
         case BUILDING_PAVILION_BLUE:
-        case BUILDING_LARGE_STATUE:
-        case BUILDING_FOUNTAIN:
-        case BUILDING_WELL:
-        case BUILDING_RESERVOIR:
+        case BUILDING_PAVILION_RED:
+        case BUILDING_PAVILION_ORANGE:
+        case BUILDING_PAVILION_YELLOW:
         case BUILDING_GATEHOUSE:
         case BUILDING_ROADBLOCK:
         case BUILDING_TRIUMPHAL_ARCH:

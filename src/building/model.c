@@ -164,12 +164,12 @@ const model_building *model_get_building(building_type type)
         return &MODEL_ROADBLOCK;
     }
 
-    if(type == BUILDING_SMALL_POND) {
-        return &buildings[42];
+    if (type >= BUILDING_PINE_TREE && type <= BUILDING_PAVILION_YELLOW) {
+        return &buildings[41];
     }
 
-    if(type == BUILDING_PAVILION_BLUE) {
-        return &buildings[41];
+    if(type == BUILDING_SMALL_POND) {
+        return &buildings[42];
     }
 
     if(type == BUILDING_LARGE_POND) {

@@ -268,17 +268,25 @@ static void add_to_map(int type, building *b, int size,
             add_building(b, image_group(GROUP_BUILDING_STATUE) + 2);
             break;
         case BUILDING_SMALL_POND:
-            log_info("s pond group", "", mods_get_group_id("Areldir", "Aesthetics"));
-            add_building(b,  mods_get_group_id("Areldir", "Aesthetics") + 13);
-            break;
-        case BUILDING_PAVILION_BLUE:
-            add_building(b,  mods_get_group_id("Areldir", "Aesthetics") + 8);
+            add_building(b, mods_get_image_id(mods_get_group_id("Areldir", "Aesthetics"), "s pond north on"));
             break;
         case BUILDING_LARGE_POND:
-            //add_building(b,  mods_get_group_id("Areldir", "Aesthetics") + 31);
-            add_building(b,  mods_get_image_id(mods_get_group_id("Areldir", "Aesthetics"), "l pond north on"));          
-            log_info("l pond id", "", mods_get_image_id(mods_get_group_id("Areldir", "Aesthetics"), "l pond north on"));
+            add_building(b, mods_get_image_id(mods_get_group_id("Areldir", "Aesthetics"), "l pond north on"));
             break;
+        case BUILDING_PAVILION_BLUE:
+            add_building(b, mods_get_image_id(mods_get_group_id("Areldir", "Aesthetics"), "pavilion blue"));
+            break;
+        case BUILDING_PAVILION_RED:
+            add_building(b, mods_get_image_id(mods_get_group_id("Areldir", "Aesthetics"), "pavilion red"));
+            break;
+        case BUILDING_PAVILION_ORANGE:
+            add_building(b, mods_get_image_id(mods_get_group_id("Areldir", "Aesthetics"), "pavilion orange"));
+            break;
+        case BUILDING_PAVILION_YELLOW:
+            add_building(b, mods_get_image_id(mods_get_group_id("Areldir", "Aesthetics"), "pavilion yellow"));
+            break;
+
+
         // health
         case BUILDING_DOCTOR:
             add_building(b, image_group(GROUP_BUILDING_DOCTOR));

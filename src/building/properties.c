@@ -1,4 +1,5 @@
 #include "properties.h"
+#include "type.h"
 #include "core/mods.h"
 
 static building_properties properties[140] = {
@@ -149,25 +150,25 @@ static building_properties properties[140] = {
 building_properties ROADBLOCK_PROPERTIES = { 1, 1 , 10052, 0 };
 building_properties SMALL_POND_PROPERTIES = { 2, 1, 10000, 13 };
 building_properties LARGE_POND_PROPERTIES = {3, 1, 10000, 33 };
-building_properties BLUE_PAVILION_PROPERTIES = { 1, 1, 10000, 8 };
+building_properties SMALL_CUSTOM_DECOR_PROPERTIES = { 1, 1, 10000, 0 };
 
 const building_properties *building_properties_for_type(building_type type)
 {
     // Roadblock properties, as plaza
-    if (type == 115){
+    if (type == BUILDING_ROADBLOCK){
         return &ROADBLOCK_PROPERTIES;
     }
 
-    if (type == 117){
+    if (type == BUILDING_SMALL_POND){
         return &SMALL_POND_PROPERTIES;
     }
 
-    if (type == 118){
-        return &BLUE_PAVILION_PROPERTIES;
+    if (type == BUILDING_LARGE_POND){
+        return &LARGE_POND_PROPERTIES;
     }
 
-    if (type == 119){
-        return &LARGE_POND_PROPERTIES;
+    if (type >= BUILDING_PINE_TREE && type <= BUILDING_PAVILION_YELLOW) {
+        return &SMALL_CUSTOM_DECOR_PROPERTIES;
     }
 
     return &properties[type];

@@ -177,11 +177,55 @@ const uint8_t *lang_get_string(int group, int index)
     }
 
     if ((group == 28) && (index == 118)) {
-        return translation_for(TR_BUILDING_PAVILION_BLUE);
+        return translation_for(TR_BUILDING_LARGE_POND);
     }
 
     if ((group == 28) && (index == 119)) {
-        return translation_for(TR_BUILDING_LARGE_POND);
+        return translation_for(TR_BUILDING_PINE_TREE);
+    }
+
+    if ((group == 28) && (index == 120)) {
+        return translation_for(TR_BUILDING_FIR_TREE);
+    }
+
+    if ((group == 28) && (index == 121)) {
+        return translation_for(TR_BUILDING_OAK_TREE);
+    }
+
+    if ((group == 28) && (index == 122)) {
+        return translation_for(TR_BUILDING_ELM_TREE);
+    }
+
+    if ((group == 28) && (index == 123)) {
+        return translation_for(TR_BUILDING_FIG_TREE);
+    }
+
+    if ((group == 28) && (index == 124)) {
+        return translation_for(TR_BUILDING_PLUM_TREE);
+    }
+
+    if ((group == 28) && (index == 125)) {
+        return translation_for(TR_BUILDING_PALM_TREE);
+    }
+
+    if ((group == 28) && (index == 126)) {
+        return translation_for(TR_BUILDING_DATE_TREE);
+    }
+
+    if ((group == 28) && (index == 127)) {
+        return translation_for(TR_BUILDING_BLUE_PAVILION);
+    }
+
+    if ((group == 28) && (index == 128)) {
+        return translation_for(TR_BUILDING_RED_PAVILION);
+    }
+
+    if ((group == 28) && (index == 129)) {
+        return translation_for(TR_BUILDING_ORANGE_PAVILION);
+    }
+
+    if ((group == 28) && (index == 130)) {
+        return translation_for(TR_BUILDING_YELLOW_PAVILION);
     }
 
     const uint8_t *str = &data.text_data[data.text_entries[group].offset];
