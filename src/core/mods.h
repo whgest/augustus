@@ -5,6 +5,13 @@
 
 #define MAX_MODDED_IMAGES 1000
 
+#define XML_BUFFER_SIZE 1024
+#define XML_MAX_DEPTH 4
+#define XML_MAX_ELEMENTS_PER_DEPTH 4
+#define XML_MAX_ATTRIBUTES 7
+#define XML_TAG_MAX_LENGTH 24
+#define XML_STRING_MAX_LENGTH 32
+
 void mods_init(void);
 
 int mods_get_group_id(const char *mod_author, const char *mod_name);

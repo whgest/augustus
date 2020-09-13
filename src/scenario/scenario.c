@@ -234,6 +234,8 @@ void scenario_load_state(buffer *buf)
     scenario.empire.id = buffer_read_i16(buf);
     buffer_skip(buf, 8);
 
+
+
     // requests
     for (int i = 0; i < MAX_REQUESTS; i++) {
         scenario.requests[i].year = buffer_read_i16(buf);

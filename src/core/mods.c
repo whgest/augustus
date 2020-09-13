@@ -14,12 +14,7 @@
 
 #include <string.h>
 
-#define XML_BUFFER_SIZE 1024
-#define XML_MAX_DEPTH 3
-#define XML_MAX_ELEMENTS_PER_DEPTH 2
-#define XML_MAX_ATTRIBUTES 6
-#define XML_TAG_MAX_LENGTH 12
-#define XML_STRING_MAX_LENGTH 32
+
 
 #define MAX_LAYERS 5
 #define MAX_GROUPS 100
@@ -612,6 +607,8 @@ void mods_init(void)
     setup_mods_folder_string();
 
     const dir_listing *xml_files = dir_find_files_with_extension(MODS_FOLDER, "xml");
+
+
 
     for (int i = 0; i < xml_files->num_files; ++i) {
         process_mod_file(xml_files->files[i]);

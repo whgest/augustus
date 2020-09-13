@@ -15,13 +15,14 @@
 #include "graphics/window.h"
 #include "sound/music.h"
 #include "window/cck_selection.h"
+#include "window/aug_scenario_selection.h"
 #include "window/config.h"
 #include "window/file_dialog.h"
 #include "window/new_career.h"
 #include "window/plain_message_dialog.h"
 #include "window/popup_dialog.h"
 
-#define MAX_BUTTONS 6
+#define MAX_BUTTONS 7
 
 static void button_click(int type, int param2);
 
@@ -30,10 +31,11 @@ static int focus_button_id;
 static generic_button buttons[] = {
     {192, 100, 256, 25, button_click, button_none, 1, 0},
     {192, 140, 256, 25, button_click, button_none, 2, 0},
-    {192, 180, 256, 25, button_click, button_none, 3, 0},
-    {192, 220, 256, 25, button_click, button_none, 4, 0},
-    {192, 260, 256, 25, button_click, button_none, 5, 0},
-    {192, 300, 256, 25, button_click, button_none, 6, 0},
+    {192, 180, 256, 25, button_click, button_none, 7, 0},
+    {192, 220, 256, 25, button_click, button_none, 3, 0},
+    {192, 260, 256, 25, button_click, button_none, 4, 0},
+    {192, 300, 256, 25, button_click, button_none, 5, 0},
+    {192, 340, 256, 25, button_click, button_none, 6, 0},
 };
 
 static void draw_version_string(void)
@@ -76,13 +78,15 @@ static void draw_foreground(void)
 
     lang_text_draw_centered(30, 1, 192, 106, 256, FONT_NORMAL_GREEN);
     lang_text_draw_centered(30, 2, 192, 146, 256, FONT_NORMAL_GREEN);
-    lang_text_draw_centered(30, 3, 192, 186, 256, FONT_NORMAL_GREEN);
-    lang_text_draw_centered(9, 8, 192, 226, 256, FONT_NORMAL_GREEN);
-    lang_text_draw_centered(2, 0, 192, 266, 256, FONT_NORMAL_GREEN);
-    lang_text_draw_centered(30, 5, 192, 306, 256, FONT_NORMAL_GREEN);
+    text_draw_centered(translation_for(TR_MAIN_MENU_SCENARIO), 192, 186, 261, FONT_NORMAL_GREEN, 0);
+    text_draw_centered(translation_for(TR_MAIN_MENU_CLASSIC_SCENARIO), 192, 226, 256, FONT_NORMAL_GREEN, 0);
+    lang_text_draw_centered(9, 8, 192, 266, 256, FONT_NORMAL_GREEN);
+    lang_text_draw_centered(2, 0, 192, 306, 256, FONT_NORMAL_GREEN);
+    lang_text_draw_centered(30, 5, 192, 346, 256, FONT_NORMAL_GREEN);
 
     graphics_reset_dialog();
 }
+
 
 static void handle_input(const mouse *m, const hotkeys *h)
 {
@@ -125,6 +129,10 @@ static void button_click(int type, int param2)
     } else if (type == 6) {
         window_popup_dialog_show(POPUP_DIALOG_QUIT, confirm_exit, 1);
     }
+    else if (type == 7) {
+        window_augustus_scenarios_show();
+    }
+
 }
 
 void window_main_menu_show(int restart_music)

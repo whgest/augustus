@@ -129,7 +129,6 @@ void scenario_invasion_init(void)
             warning->warning_years = obj->invasion_years;
             warning->x = obj->x;
             warning->y = obj->y;
-            warning->image_id = obj->image_id;
             warning->invasion_id = i;
             warning->empire_object_id = obj->id;
             warning->month_notified = 0;

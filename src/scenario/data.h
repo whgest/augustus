@@ -137,6 +137,7 @@ extern struct scenario_t {
     int image_id;
     uint8_t brief_description[MAX_BRIEF_DESCRIPTION];
     uint8_t briefing[MAX_BRIEFING];
+    uint8_t author[MAX_SCENARIO_NAME];
     int enemy_id;
     int is_open_play;
     int open_play_scenario_id;

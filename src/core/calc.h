@@ -111,4 +111,6 @@ int calc_absolute_increment(int value, int step, int max);
  */
 int calc_absolute_decrement(int value, int step);
 
+int calc_midpoint(int x1, int x2);
+
 #endif // CORE_CALC_H

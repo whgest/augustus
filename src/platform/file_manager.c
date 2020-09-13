@@ -87,7 +87,7 @@ static int is_file(int mode)
     return S_ISREG(mode) || S_ISLNK(mode);
 }
 
-int platform_file_manager_list_directory_contents(const char *dir, int type, const char *extension, int (*callback)(const char *))
+int platform_file_manager_list_directory_contents(const char *dir, int type, const char *extension, int with_parent, int (*callback)(const char *))
 {
     if (type == TYPE_NONE) {
         return LIST_ERROR;
@@ -123,9 +123,20 @@ int platform_file_manager_list_directory_contents(const char *dir, int type, con
                 // Skip current (.), parent (..) and hidden directories (.*)
                 continue;
             }
+
             match = callback(name);
+                        
         } else if (file_has_extension(name, extension)) {
-            match = callback(name);
+            if (with_parent) {
+                char file_with_parent[FILE_NAME_MAX];
+                strcpy(file_with_parent, dir);
+                strcat(file_with_parent, "/");
+                strcat(file_with_parent, name);
+                match = callback(file_with_parent);
+            }
+            else {
+                match = callback(name);
+            }
         }
         if (match == LIST_MATCH) {
             break;

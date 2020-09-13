@@ -57,6 +57,10 @@ int scenario_image_id(void);
 
 const uint8_t *scenario_brief_description(void);
 
+const uint8_t* scenario_briefing(void);
+
+const uint8_t* scenario_author(void);
+
 int scenario_initial_funds(void);
 
 int scenario_rescue_loan(void);

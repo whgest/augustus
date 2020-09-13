@@ -233,6 +233,8 @@ set(CORE_FILES
     ${PROJECT_SOURCE_DIR}/src/core/lang.c
     ${PROJECT_SOURCE_DIR}/src/core/locale.c
     ${PROJECT_SOURCE_DIR}/src/core/mods.c
+    ${PROJECT_SOURCE_DIR}/src/core/load_empire.c
+    ${PROJECT_SOURCE_DIR}/src/core/load_scenario.c
     ${PROJECT_SOURCE_DIR}/src/core/png_read.c
     ${PROJECT_SOURCE_DIR}/src/core/random.c
     ${PROJECT_SOURCE_DIR}/src/core/smacker.c
@@ -526,6 +528,7 @@ set(WINDOW_FILES
     ${PROJECT_SOURCE_DIR}/src/window/editor/start_year.c
     ${PROJECT_SOURCE_DIR}/src/window/editor/starting_conditions.c
     ${PROJECT_SOURCE_DIR}/src/window/editor/win_criteria.c
+    ${PROJECT_SOURCE_DIR}/src/window/aug_scenario_selection.c
     ${PROJECT_SOURCE_DIR}/src/window/cck_selection.c
     ${PROJECT_SOURCE_DIR}/src/window/city.c
     ${PROJECT_SOURCE_DIR}/src/window/config.c
@@ -636,7 +639,7 @@ endfunction()
 find_package(SDL2 REQUIRED)
 find_package(SDL2_mixer REQUIRED)
 
-add_executable(${SHORT_NAME} WIN32 ${SOURCE_FILES})
+add_executable(${SHORT_NAME} WIN32 ${SOURCE_FILES} "src/window/aug_scenario_selection.h")
 
 if(MSVC)
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS)

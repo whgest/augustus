@@ -273,3 +273,9 @@ int calc_absolute_decrement(int value, int step)
     }
     return (step >= -value) ? 0 : value + step;
 }
+
+int calc_midpoint(int x1, int x2)
+{
+    return (x1 + x2) / 2;
+}
+

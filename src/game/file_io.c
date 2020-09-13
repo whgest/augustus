@@ -494,6 +494,7 @@ static void savegame_load_from_state(savegame_state *state)
 
     empire_load_state(state->empire);
     empire_city_load_state(state->empire_cities);
+    
     trade_prices_load_state(state->trade_prices);
     figure_name_load_state(state->figure_names);
     city_culture_load_state(state->culture_coverage);
@@ -572,9 +573,11 @@ static void savegame_save_to_state(savegame_state *state)
                               state->building_count_support);
 
     scenario_emperor_change_save_state(state->emperor_change_time, state->emperor_change_state);
+    
     empire_save_state(state->empire);
     empire_city_save_state(state->empire_cities);
     trade_prices_save_state(state->trade_prices);
+    
     figure_name_save_state(state->figure_names);
     city_culture_save_state(state->culture_coverage);
 

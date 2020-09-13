@@ -133,6 +133,16 @@ const uint8_t *scenario_brief_description(void)
     return scenario.brief_description;
 }
 
+const uint8_t* scenario_briefing(void)
+{
+    return scenario.briefing;
+}
+
+const uint8_t* scenario_author(void)
+{
+    return scenario.author;
+}
+
 int scenario_initial_funds(void)
 {
     return scenario.initial_funds;

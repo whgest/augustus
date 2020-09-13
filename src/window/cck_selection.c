@@ -227,7 +227,7 @@ static void button_select_item(int index, int param2)
 
 static void button_start_scenario(int param1, int param2)
 {
-    if (game_file_start_scenario(data.selected_scenario_filename)) {
+    if (game_file_start_scenario(data.selected_scenario_filename, 0)) {
         sound_music_update(1);
         window_city_show();
     }

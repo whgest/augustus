@@ -23,6 +23,24 @@ typedef struct {
     int invasion_years;
 } empire_object;
 
+typedef struct {
+    int in_use;
+    int city_type;
+    int city_name_id;
+    int trade_route_open;
+    int trade_route_cost;
+    int city_sells_resource[10];
+    int city_buys_resource[8];
+    int trade40;
+    int trade25;
+    int trade15;
+    empire_object obj;
+} full_empire_object;
+
+
+#define MAX_OBJECTS 200
+full_empire_object objects[MAX_OBJECTS];
+
 void empire_object_load(buffer *buf);
 
 void empire_object_init_cities(void);
@@ -47,5 +65,7 @@ int empire_object_city_buys_resource(int object_id, int resource);
 int empire_object_city_sells_resource(int object_id, int resource);
 
 int empire_object_update_animation(const empire_object *obj, int image_id);
+
+void fix_image_ids(void);
 
 #endif // EMPIRE_OBJECT_H

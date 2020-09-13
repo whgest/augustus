@@ -18,6 +18,8 @@
 #include "core/image.h"
 #include "core/io.h"
 #include "core/lang.h"
+#include "core/load_empire.h"
+#include "core/load_scenario.h"
 #include "core/string.h"
 #include "empire/empire.h"
 #include "empire/trade_prices.h"
@@ -56,6 +58,7 @@
 #include "map/terrain.h"
 #include "map/tiles.h"
 #include "scenario/criteria.h"
+#include "scenario/data.h"
 #include "scenario/demand_change.h"
 #include "scenario/distant_battle.h"
 #include "scenario/earthquake.h"
@@ -188,14 +191,20 @@ static void initialize_scenario_data(const uint8_t *scenario_name)
     game_state_unpause();
 }
 
-static int load_custom_scenario(const uint8_t *scenario_name, const char *scenario_file)
+static int load_custom_scenario(const uint8_t *scenario_name, const char *scenario_file, int is_augustus_scenario)
 {
     if (!file_exists(scenario_file, NOT_LOCALIZED)) {
         return 0;
     }
 
     clear_scenario_data();
-    game_file_load_scenario_data(scenario_file);
+    if (is_augustus_scenario) {
+        game_file_load_scenario_data_from_xml(scenario_file);
+    }
+    else {
+        game_file_load_scenario_data(scenario_file);
+    }    
+    
     initialize_scenario_data(scenario_name);
     return 1;
 }
@@ -302,13 +311,13 @@ static int load_campaign_mission(int mission_id)
     return 1;
 }
 
-static int start_scenario(const uint8_t *scenario_name, const char *scenario_file)
+static int start_scenario(const uint8_t *scenario_name, const char *scenario_file, int is_augustus_scenario)
 {
     int mission = scenario_campaign_mission();
     int rank = scenario_campaign_rank();
     map_bookmarks_clear();
     if (scenario_is_custom()) {
-        if (!load_custom_scenario(scenario_name, scenario_file)) {
+        if (!load_custom_scenario(scenario_name, scenario_file, is_augustus_scenario)) {
             return 0;
         }
         scenario_set_player_name(setting_player_name());
@@ -347,19 +356,19 @@ static const char *get_scenario_filename(const uint8_t *scenario_name, int decom
 
 int game_file_start_scenario_by_name(const uint8_t *scenario_name)
 {
-    if (start_scenario(scenario_name, get_scenario_filename(scenario_name, 0))) {
+    if (start_scenario(scenario_name, get_scenario_filename(scenario_name, 0), 0)) {
         return 1;
     } else {
-        return start_scenario(scenario_name, get_scenario_filename(scenario_name, 1));
+        return start_scenario(scenario_name, get_scenario_filename(scenario_name, 1), 0);
     }
 }
 
-int game_file_start_scenario(const char *scenario_file)
+int game_file_start_scenario(const char *scenario_file, int is_augustus_scenario)
 {
     uint8_t scenario_name[FILE_NAME_MAX];
     encoding_from_utf8(scenario_file, scenario_name, FILE_NAME_MAX);
     file_remove_extension(scenario_name);
-    return start_scenario(scenario_name, scenario_file);
+    return start_scenario(scenario_name, scenario_file, is_augustus_scenario);
 }
 
 int game_file_load_scenario_data(const char *scenario_file)
@@ -373,14 +382,68 @@ int game_file_load_scenario_data(const char *scenario_file)
     return 1;
 }
 
+//todo: i think this only works on windows
+const char* get_scenario_dir_from_map_file_path(const char* scenario_file)
+{
+    char path_to_scenario_map[FILENAME_MAX];
+    const char* path_to_scenario_dir[FILENAME_MAX];
+
+    strcpy(path_to_scenario_map, scenario_file);
+    _splitpath_s(path_to_scenario_map,
+        NULL, 0,
+        path_to_scenario_dir, sizeof(path_to_scenario_dir),
+        NULL, 0,
+        NULL, 0);
+
+    return path_to_scenario_dir;
+}
+
+int game_file_load_scenario_data_from_xml(const char* scenario_file)
+{
+    if (!game_file_io_read_scenario(scenario_file)) {
+        return 0;
+    }
+
+    char* path_to_scenario_dir = get_scenario_dir_from_map_file_path(scenario_file);
+
+    char empire_filepath[FILE_NAME_MAX];
+    strcpy(empire_filepath, path_to_scenario_dir);
+    strcat(empire_filepath, "empire.xml");
+
+    char scenario_filepath[FILE_NAME_MAX];
+    strcpy(scenario_filepath, path_to_scenario_dir);
+    strcat(scenario_filepath, "scenario.xml");
+
+    trade_prices_reset();
+    empire_load_from_file(empire_filepath);
+    scenario_load_from_file(scenario_filepath);
+    scenario.empire.id = 99; //this value will fetch custom empires when savefile is loaded
+    return 1;
+}
+
 int game_file_load_saved_game(const char *filename)
 {
     if (!game_file_io_read_saved_game(filename, 0)) {
         return 0;
     }
+
     check_backward_compatibility();
     initialize_saved_game();
     building_storage_reset_building_ids();
+
+    char* path_to_scenario_dir = get_scenario_dir_from_map_file_path(scenario.scenario_name);
+
+    char empire_filepath[FILE_NAME_MAX];
+    strcpy(empire_filepath, path_to_scenario_dir);
+    strcat(empire_filepath, "empire.xml");
+
+    //char scenario_filepath[FILE_NAME_MAX];
+    //strcpy(scenario_filepath, path_to_scenario_dir);
+    //strcat(scenario_filepath, "scenario.xml");
+
+    trade_prices_reset();
+    empire_load_from_file(empire_filepath);
+    //scenario_load_from_file(scenario_filepath);
 
     sound_music_update(1);
     return 1;

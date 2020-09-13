@@ -183,6 +183,8 @@ static translation_string all_strings[] = {
     {TR_BUILDING_GREEN_PAVILION, "Green pavilion" },
     {TR_BUILDING_SMALL_STATUE_ALT, "Goddess sculpture" },
     {TR_BUILDING_SMALL_STATUE_ALT_B, "Senator sculpture"},
+    {TR_MAIN_MENU_SCENARIO, "Augustus Scenarios"},
+    {TR_MAIN_MENU_CLASSIC_SCENARIO, "Classic Scenarios"}
 
 };
 

@@ -52,7 +52,8 @@ void empire_load(int is_custom_scenario, int empire_id)
         memset(raw_data, 0, EMPIRE_DATA_SIZE);
     }
     buffer_init(&buf, raw_data, EMPIRE_DATA_SIZE);
-    empire_object_load(&buf);
+
+    empire_object_load(&buf);    
 }
 
 static void check_scroll_boundaries(void)

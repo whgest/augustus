@@ -149,6 +149,9 @@ static void draw_empire_object(const empire_object *obj)
             data.x_draw_offset + x + 7, data.y_draw_offset + y - 9,
             obj->type == EMPIRE_OBJECT_ROMAN_ARMY ? COLOR_WHITE : COLOR_FONT_RED);
     }
+    else if (obj->type == EMPIRE_OBJECT_LAND_TRADE_ROUTE) {
+
+    }
     image_draw(image_id, data.x_draw_offset + x, data.y_draw_offset + y);
     const image *img = image_get(image_id);
     if (img->animation_speed_id) {

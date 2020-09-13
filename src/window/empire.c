@@ -3,6 +3,7 @@
 #include "building/menu.h"
 #include "city/military.h"
 #include "city/warning.h"
+#include "core/calc.h"
 #include "core/image_group.h"
 #include "empire/city.h"
 #include "empire/empire.h"
@@ -228,6 +229,7 @@ static void draw_city_info(const empire_object *object)
     int y_offset = data.y_max - 88;
 
     const empire_city *city = empire_city_get(data.selected_city);
+
     switch (city->type) {
         case EMPIRE_CITY_DISTANT_ROMAN:
             lang_text_draw_centered(47, 12, x_offset, y_offset + 42, 240, FONT_NORMAL_GREEN);
@@ -344,6 +346,9 @@ static void draw_empire_object(const empire_object *obj)
             // Fix cases where empire map still gives a blue flag for new trade cities (e.g. Massilia in campaign Lugdunum)
             image_id = image_group(GROUP_EMPIRE_CITY_TRADE);
         }
+        else if (city->type == EMPIRE_CITY_DISTANT_ROMAN) {
+            image_id = image_group(GROUP_EMPIRE_CITY_DISTANT_ROMAN);
+        }
     }
     if (obj->type == EMPIRE_OBJECT_BATTLE_ICON) {
         // handled later
@@ -365,6 +370,35 @@ static void draw_empire_object(const empire_object *obj)
             return;
         }
     }
+
+    if ((obj->type == EMPIRE_OBJECT_LAND_TRADE_ROUTE || obj->type == EMPIRE_OBJECT_SEA_TRADE_ROUTE)  && !obj->image_id) {
+        //draw lines for user defined trade routes
+        
+        //find home city x, y
+        int home_coords[2] = {0, 0};
+        for (int i = 0; i < MAX_OBJECTS; i++) {
+            if (objects[i].in_use && objects[i].city_type == 1) {
+                home_coords[0] = objects[i].obj.x;
+                home_coords[1] = objects[i].obj.y;
+            }
+        }
+
+        // x and y are set to the location of this trade route's destination city during load
+        const int x1 = home_coords[0] + data.x_draw_offset + 15;
+        const int x2 = obj->x + data.x_draw_offset + 15;
+        const int y1 = home_coords[1] + data.y_draw_offset +35;
+        const int y2 = obj->y + data.y_draw_offset +35;        
+
+        graphics_draw_line(x1, y1, x2, y2, COLOR_WHITE);
+        graphics_draw_line(x1 + 1, y1, x2 + 1, y2, COLOR_WHITE);
+        graphics_draw_line(x1, y1 + 1, x2, y2 + 1, COLOR_WHITE);
+
+        //draw route type
+        int image_id = image_group(GROUP_EMPIRE_TRADE_ROUTE_TYPE) + (EMPIRE_OBJECT_SEA_TRADE_ROUTE - obj->type);
+        image_draw(image_id, calc_midpoint(x1, x2), calc_midpoint(y1, y2) - 15);
+    }
+
+
     image_draw(image_id, data.x_draw_offset + x, data.y_draw_offset + y);
     const image *img = image_get(image_id);
     if (img->animation_speed_id) {
