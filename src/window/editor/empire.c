@@ -43,6 +43,8 @@ static struct {
     int is_scrolling;
     int finished_scroll;
     int show_battle_objects;
+    int map_coords_x_at_mouse;
+    int map_coords_y_at_mouse;
 } data;
 
 static void init(void)
@@ -123,6 +125,12 @@ static void draw_shadowed_number(int value, int x, int y, color_t color)
     text_draw_number_colored(value, '@', " ", x, y, FONT_SMALL_PLAIN, color);
 }
 
+static void draw_map_coords(int x, int y)
+{
+    text_draw_number_colored(x - data.x_draw_offset, '@', ",", 30, 30, FONT_SMALL_PLAIN, COLOR_RED);
+    text_draw_number_colored(y - data.y_draw_offset, '@', " ", 70, 30, FONT_SMALL_PLAIN, COLOR_RED);
+}
+
 static void draw_empire_object(const empire_object *obj)
 {
     int x = obj->x;
@@ -176,7 +184,7 @@ static void draw_map(void)
     image_draw(image_group(GROUP_EDITOR_EMPIRE_MAP), data.x_draw_offset, data.y_draw_offset);
 
     empire_object_foreach(draw_empire_object);
-
+    draw_map_coords(data.map_coords_x_at_mouse, data.map_coords_y_at_mouse);
     graphics_reset_clip_rectangle();
 }
 
@@ -319,7 +327,12 @@ static void handle_input(const mouse *m, const hotkeys *h)
             data.finished_scroll = !touch_was_click(t);
             scroll_drag_end();
         }
+
     }
+
+    data.map_coords_x_at_mouse = m->x;
+    data.map_coords_y_at_mouse = m->y;
+
     data.focus_button_id = 0;
     if (!arrow_buttons_handle_mouse(m, data.x_min + 20, data.y_max - 100, arrow_buttons_empire, 2, 0)) {
         if (!generic_buttons_handle_mouse(m, data.x_min + 20, data.y_max - 100, generic_button_ok, 1, &data.focus_button_id)) {

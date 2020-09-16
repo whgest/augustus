@@ -35,14 +35,12 @@ static struct {
     int resource_flag;
 } data;
 
-static const char XML_FILE_ELEMENTS[XML_MAX_DEPTH][XML_MAX_ELEMENTS_PER_DEPTH][XML_TAG_MAX_LENGTH] = { { "empire" }, { "city", "invasionPath", "dbEnemyPath", "dbRomanPath" }, { "trade" }, { "export", "import" } };
+static const char XML_FILE_ELEMENTS[XML_MAX_DEPTH][XML_MAX_ELEMENTS_PER_DEPTH][XML_TAG_MAX_LENGTH] = { { "empire" }, { "city", "invasionPath"}, { "trade" }, { "export", "import" } };
 static const char XML_FILE_ATTRIBUTES[XML_MAX_DEPTH][XML_MAX_ELEMENTS_PER_DEPTH][XML_MAX_ATTRIBUTES][XML_TAG_MAX_LENGTH] = {
     { { "id" } }, // empire
     { 
         { "type", "name", "x", "y" }, //city
         { "x", "y", "yearsBefore" }, //invasion warning
-        { "x", "y", "months" }, //invasion warning
-        { "x", "y", "months" } //invasion warning
     }, 
     { { "open", "cost", "isWater" } }, //trade
     { 
@@ -61,19 +59,19 @@ static void xml_start_export_element(const char** attributes);
 static void xml_start_import_element(const char** attributes);
 static void xml_end_empire_element(void);
 static void xml_end_city_element(void);
-static void xml_end_enemy_path_element(void);
-static void xml_end_roman_path_element(void);
+//static void xml_end_enemy_path_element(void);
+//static void xml_end_roman_path_element(void);
 static void xml_end_invasion_element(void);
 static void xml_end_trade_element(void);
 static void xml_end_export_element(void);
 static void xml_end_import_element(void);
 
 static void (*xml_start_element_callback[XML_MAX_DEPTH][XML_MAX_ELEMENTS_PER_DEPTH])(const char** attributes) = {
-    { xml_start_empire_element }, { xml_start_city_element, xml_start_invasion_element, xml_start_enemy_path_element, xml_start_roman_path_element }, { xml_start_trade_element },  { xml_start_export_element, xml_start_import_element }
+    { xml_start_empire_element }, { xml_start_city_element, xml_start_invasion_element }, { xml_start_trade_element },  { xml_start_export_element, xml_start_import_element }
 };
 
 static void (*xml_end_element_callback[XML_MAX_DEPTH][XML_MAX_ELEMENTS_PER_DEPTH])(void) = {
-    { xml_end_empire_element }, { xml_end_city_element, xml_end_invasion_element, xml_end_enemy_path_element, xml_end_roman_path_element }, { xml_end_trade_element }, { xml_end_import_element, xml_end_export_element }
+    { xml_end_empire_element }, { xml_end_city_element, xml_end_invasion_element }, { xml_end_trade_element }, { xml_end_import_element, xml_end_export_element }
 };
 
 static int count_xml_attributes(const char** attributes)
@@ -124,68 +122,68 @@ static void xml_start_invasion_element(const char** attributes)
         }
     }
 }
-
-static void xml_start_enemy_path_element(const char** attributes)
-{
-    data.xml.current_city = &objects[data.total_objects];
-    full_empire_object* enemy_path = data.xml.current_city;
-
-    int total_attributes = count_xml_attributes(attributes);
-    if (total_attributes < 6 || total_attributes > 6 || total_attributes % 2) {
-        data.xml.error = 1;
-        return;
-    }
-
-    enemy_path->obj.id = data.total_objects;
-    enemy_path->in_use = 1;
-    enemy_path->obj.image_id = 8055;
-    enemy_path->obj.width = 50;
-    enemy_path->obj.height = 50;
-    enemy_path->obj.type = EMPIRE_OBJECT_ENEMY_ARMY;
-
-    for (int i = 0; i < total_attributes; i += 2) {
-        if (strcmp(attributes[i], XML_FILE_ATTRIBUTES[1][2][0]) == 0) {
-            enemy_path->obj.x = string_to_int(string_from_ascii(attributes[i + 1]));
-        }
-        if (strcmp(attributes[i], XML_FILE_ATTRIBUTES[1][2][1]) == 0) {
-            enemy_path->obj.y = string_to_int(string_from_ascii(attributes[i + 1]));
-        }
-        if (strcmp(attributes[i], XML_FILE_ATTRIBUTES[1][2][2]) == 0) {
-            enemy_path->obj.distant_battle_travel_months = string_to_int(string_from_ascii(attributes[i + 1]));
-        }
-    }
-}
-
-static void xml_start_roman_path_element(const char** attributes)
-{
-    data.xml.current_city = &objects[data.total_objects];
-    full_empire_object* roman_path = data.xml.current_city;
-
-    int total_attributes = count_xml_attributes(attributes);
-    if (total_attributes < 6 || total_attributes > 6 || total_attributes % 2) {
-        data.xml.error = 1;
-        return;
-    }
-
-    roman_path->obj.id = data.total_objects;
-    roman_path->in_use = 1;
-    roman_path->obj.image_id = image_group(GROUP_EMPIRE_ROMAN_ARMY);
-    roman_path->obj.width = 50;
-    roman_path->obj.height = 50;
-    roman_path->obj.type = EMPIRE_OBJECT_ROMAN_ARMY;
-
-    for (int i = 0; i < total_attributes; i += 2) {
-        if (strcmp(attributes[i], XML_FILE_ATTRIBUTES[1][3][0]) == 0) {
-            roman_path->obj.x = string_to_int(string_from_ascii(attributes[i + 1]));
-        }
-        if (strcmp(attributes[i], XML_FILE_ATTRIBUTES[1][3][1]) == 0) {
-            roman_path->obj.y = string_to_int(string_from_ascii(attributes[i + 1]));
-        }
-        if (strcmp(attributes[i], XML_FILE_ATTRIBUTES[1][3][2]) == 0) {
-            roman_path->obj.distant_battle_travel_months = string_to_int(string_from_ascii(attributes[i + 1]));
-        }
-    }
-}
+//
+//static void xml_start_enemy_path_element(const char** attributes)
+//{
+//    data.xml.current_city = &objects[data.total_objects];
+//    full_empire_object* enemy_path = data.xml.current_city;
+//
+//    int total_attributes = count_xml_attributes(attributes);
+//    if (total_attributes < 6 || total_attributes > 6 || total_attributes % 2) {
+//        data.xml.error = 1;
+//        return;
+//    }
+//
+//    enemy_path->obj.id = data.total_objects;
+//    enemy_path->in_use = 1;
+//    enemy_path->obj.image_id = 8055;
+//    enemy_path->obj.width = 50;
+//    enemy_path->obj.height = 50;
+//    enemy_path->obj.type = EMPIRE_OBJECT_ENEMY_ARMY;
+//
+//    for (int i = 0; i < total_attributes; i += 2) {
+//        if (strcmp(attributes[i], XML_FILE_ATTRIBUTES[1][2][0]) == 0) {
+//            enemy_path->obj.x = string_to_int(string_from_ascii(attributes[i + 1]));
+//        }
+//        if (strcmp(attributes[i], XML_FILE_ATTRIBUTES[1][2][1]) == 0) {
+//            enemy_path->obj.y = string_to_int(string_from_ascii(attributes[i + 1]));
+//        }
+//        if (strcmp(attributes[i], XML_FILE_ATTRIBUTES[1][2][2]) == 0) {
+//            enemy_path->obj.distant_battle_travel_months = string_to_int(string_from_ascii(attributes[i + 1]));
+//        }
+//    }
+//}
+//
+//static void xml_start_roman_path_element(const char** attributes)
+//{
+//    data.xml.current_city = &objects[data.total_objects];
+//    full_empire_object* roman_path = data.xml.current_city;
+//
+//    int total_attributes = count_xml_attributes(attributes);
+//    if (total_attributes < 6 || total_attributes > 6 || total_attributes % 2) {
+//        data.xml.error = 1;
+//        return;
+//    }
+//
+//    roman_path->obj.id = data.total_objects;
+//    roman_path->in_use = 1;
+//    roman_path->obj.image_id = image_group(GROUP_EMPIRE_ROMAN_ARMY);
+//    roman_path->obj.width = 50;
+//    roman_path->obj.height = 50;
+//    roman_path->obj.type = EMPIRE_OBJECT_ROMAN_ARMY;
+//
+//    for (int i = 0; i < total_attributes; i += 2) {
+//        if (strcmp(attributes[i], XML_FILE_ATTRIBUTES[1][3][0]) == 0) {
+//            roman_path->obj.x = string_to_int(string_from_ascii(attributes[i + 1]));
+//        }
+//        if (strcmp(attributes[i], XML_FILE_ATTRIBUTES[1][3][1]) == 0) {
+//            roman_path->obj.y = string_to_int(string_from_ascii(attributes[i + 1]));
+//        }
+//        if (strcmp(attributes[i], XML_FILE_ATTRIBUTES[1][3][2]) == 0) {
+//            roman_path->obj.distant_battle_travel_months = string_to_int(string_from_ascii(attributes[i + 1]));
+//        }
+//    }
+//}
 
 static void xml_start_city_element(const char** attributes)
 {
@@ -295,8 +293,6 @@ static void xml_start_import_element(const char** attributes)
                 case 40:
                     data.xml.current_city->trade40 += data.resource_flag;
                     break;
-                default:
-                    data.xml.current_city->trade15 += data.resource_flag;
             }
         }
     }
@@ -334,8 +330,6 @@ static void xml_start_export_element(const char** attributes)
             case 40:
                 data.xml.current_city->trade40 += data.resource_flag;
                 break;
-            default:
-                data.xml.current_city->trade15 += data.resource_flag;
             }
         }
     }

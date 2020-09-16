@@ -349,6 +349,9 @@ static void draw_empire_object(const empire_object *obj)
         else if (city->type == EMPIRE_CITY_DISTANT_ROMAN) {
             image_id = image_group(GROUP_EMPIRE_CITY_DISTANT_ROMAN);
         }
+        else if (city->type == EMPIRE_CITY_OURS) {
+            image_id = image_group(GROUP_EMPIRE_CITY);
+        }
     }
     if (obj->type == EMPIRE_OBJECT_BATTLE_ICON) {
         // handled later
