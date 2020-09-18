@@ -639,7 +639,7 @@ endfunction()
 find_package(SDL2 REQUIRED)
 find_package(SDL2_mixer REQUIRED)
 
-add_executable(${SHORT_NAME} WIN32 ${SOURCE_FILES} "src/window/aug_scenario_selection.h")
+add_executable(${SHORT_NAME} WIN32 ${SOURCE_FILES})
 
 if(MSVC)
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS)

@@ -51,8 +51,8 @@ static const char XML_FILE_ATTRIBUTES[XML_MAX_DEPTH][XML_MAX_ELEMENTS_PER_DEPTH]
 
 static void xml_start_empire_element(const char** attributes);
 static void xml_start_city_element(const char** attributes);
-static void xml_start_enemy_path_element(const char** attributes);
-static void xml_start_roman_path_element(const char** attributes);
+//static void xml_start_enemy_path_element(const char** attributes);
+//static void xml_start_roman_path_element(const char** attributes);
 static void xml_start_invasion_element(const char** attributes);
 static void xml_start_trade_element(const char** attributes);
 static void xml_start_export_element(const char** attributes);
@@ -475,6 +475,7 @@ static void process_file(const char* xml_file_name)
 
 void empire_load_from_file(const char* file_path)
 {
+    clear_empire_objects();
     process_file(file_path);
         
 }

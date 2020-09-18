@@ -406,6 +406,7 @@ int game_file_load_scenario_data_from_xml(const char* scenario_file)
 
     char* path_to_scenario_dir = get_scenario_dir_from_map_file_path(scenario_file);
 
+    // bug: data is not nulled out before reload
     char empire_filepath[FILE_NAME_MAX];
     strcpy(empire_filepath, path_to_scenario_dir);
     strcat(empire_filepath, "empire.xml");

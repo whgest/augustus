@@ -361,3 +361,10 @@ int empire_object_update_animation(const empire_object *obj, int image_id)
 {
     return objects[obj->id].obj.animation_index = get_animation_offset(image_id, obj->animation_index);
 }
+
+void clear_empire_objects(void) {
+    // todo: actually clear these from memory
+    for (int i = 0; i < MAX_OBJECTS; i++) {
+        objects[i].in_use = 0;
+    }
+}

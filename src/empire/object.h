@@ -68,4 +68,6 @@ int empire_object_update_animation(const empire_object *obj, int image_id);
 
 void fix_image_ids(void);
 
+void clear_empire_objects(void);
+
 #endif // EMPIRE_OBJECT_H
