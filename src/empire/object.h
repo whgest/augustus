@@ -27,6 +27,7 @@ typedef struct {
     int in_use;
     int city_type;
     int city_name_id;
+    uint8_t city_display_name[24];
     int trade_route_open;
     int trade_route_cost;
     int city_sells_resource[10];

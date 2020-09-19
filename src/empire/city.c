@@ -13,9 +13,6 @@
 
 #include <string.h>
 
-#define MAX_CITIES 41
-
-static empire_city cities[MAX_CITIES];
 
 void empire_city_clear_all(void)
 {
@@ -290,6 +287,12 @@ void empire_city_open_trade(int city_id)
     empire_city *city = &cities[city_id];
     city_finance_process_construction(city->cost_to_open);
     city->is_open = 1;
+}
+
+void empire_city_change_type(int city_id, int new_type)
+{
+    empire_city* city = &cities[city_id];
+    city->type = new_type;
 }
 
 void empire_city_generate_trader(void)

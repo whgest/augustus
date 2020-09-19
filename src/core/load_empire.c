@@ -208,7 +208,7 @@ static void xml_start_city_element(const char** attributes)
             city->city_type = string_to_int(string_from_ascii(attributes[i + 1]));
         }
         if (strcmp(attributes[i], XML_FILE_ATTRIBUTES[1][0][1]) == 0) {
-            city->city_name_id = string_to_int(string_from_ascii(attributes[i + 1]));
+            strcpy(city->city_display_name, string_from_ascii(attributes[i + 1]));
         }
         if (strcmp(attributes[i], XML_FILE_ATTRIBUTES[1][0][2]) == 0) {
             city->obj.x = string_to_int(string_from_ascii(attributes[i + 1]));

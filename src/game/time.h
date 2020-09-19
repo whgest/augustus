@@ -73,4 +73,6 @@ void game_time_save_state(buffer *buf);
  */
 void game_time_load_state(buffer *buf);
 
+int get_total_months(void);
+
 #endif // GAME_TIME_H

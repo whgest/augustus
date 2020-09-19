@@ -442,8 +442,8 @@ static void draw_city_name(const empire_city *city)
     image_draw(image_base + 7, data.x_max - 84, data.y_max - 199);
     image_draw(image_base + 8, (data.x_min + data.x_max - 332) / 2, data.y_max - 181);
     if (city) {
-        lang_text_draw_centered(21, city->name_id,
-            (data.x_min + data.x_max - 332) / 2 + 64, data.y_max - 118, 268, FONT_LARGE_BLACK);
+        text_draw_centered(city->display_name,
+            (data.x_min + data.x_max - 332) / 2 + 64, data.y_max - 118, 268, FONT_LARGE_BLACK, 0);
     }
 }
 

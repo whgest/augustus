@@ -8,6 +8,7 @@ typedef struct {
     int in_use;
     int type;
     int name_id;
+    uint8_t display_name[24];
     int route_id;
     int is_open;
     int buys_resource[RESOURCE_MAX];
@@ -18,6 +19,10 @@ typedef struct {
     int is_sea_trade;
     int trader_figure_ids[3];
 } empire_city;
+
+#define MAX_CITIES 41
+
+empire_city cities[MAX_CITIES];
 
 void empire_city_clear_all(void);
 
@@ -54,6 +59,8 @@ void empire_city_set_vulnerable(int city_id);
 void empire_city_set_foreign(int city_id);
 
 void empire_city_open_trade(int city_id);
+
+void empire_city_change_type(int city_id, int new_type);
 
 void empire_city_generate_trader(void);
 

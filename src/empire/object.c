@@ -9,6 +9,7 @@
 #include "game/animation.h"
 #include "scenario/empire.h"
 
+#include <string.h>
 
 static int get_trade_amount_code(int index, int resource);
 static int is_sea_trade_route(int route_id);
@@ -102,6 +103,8 @@ void empire_object_init_cities(void)
         city->in_use = 1;
         city->type = obj->city_type;
         city->name_id = obj->city_name_id;
+        strcpy(city->display_name, obj->city_display_name);
+
         if (obj->obj.trade_route_id < 0) {
             obj->obj.trade_route_id = 0;
         }

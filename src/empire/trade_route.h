@@ -28,6 +28,8 @@ int trade_route_decrease_limit(int route_id, resource_type resource);
 
 void trade_route_increase_traded(int route_id, resource_type resource);
 
+int trade_route_change_limit(int route_id, resource_type resource, int limit);
+
 void trade_route_reset_traded(int route_id);
 
 int trade_route_limit_reached(int route_id, resource_type resource);
