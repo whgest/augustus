@@ -3,4 +3,5 @@
 
 void scenario_load_from_file(const char* file_path);
 
+void clear_custom_events(void);
 #endif

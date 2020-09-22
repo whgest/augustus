@@ -30,6 +30,8 @@
 #include "window/resource_settings.h"
 #include "window/trade_opened.h"
 
+#include <string.h>
+
 #define MAX_WIDTH 2032
 #define MAX_HEIGHT 1136
 
@@ -346,7 +348,7 @@ static void draw_empire_object(const empire_object *obj)
             // Fix cases where empire map still gives a blue flag for new trade cities (e.g. Massilia in campaign Lugdunum)
             image_id = image_group(GROUP_EMPIRE_CITY_TRADE);
         }
-        else if (city->type == EMPIRE_CITY_DISTANT_ROMAN) {
+        else if (city->type == EMPIRE_CITY_DISTANT_ROMAN || city->type == EMPIRE_CITY_FUTURE_TRADE) {
             image_id = image_group(GROUP_EMPIRE_CITY_DISTANT_ROMAN);
         }
         else if (city->type == EMPIRE_CITY_OURS) {
@@ -442,8 +444,14 @@ static void draw_city_name(const empire_city *city)
     image_draw(image_base + 7, data.x_max - 84, data.y_max - 199);
     image_draw(image_base + 8, (data.x_min + data.x_max - 332) / 2, data.y_max - 181);
     if (city) {
-        text_draw_centered(city->display_name,
-            (data.x_min + data.x_max - 332) / 2 + 64, data.y_max - 118, 268, FONT_LARGE_BLACK, 0);
+        if (strlen(city->display_name)) {
+            text_draw_centered(city->display_name,
+                (data.x_min + data.x_max - 332) / 2 + 64, data.y_max - 118, 268, FONT_LARGE_BLACK, 0);
+        }
+        else {
+            lang_text_draw_centered(21, city->name_id,
+                (data.x_min + data.x_max - 332) / 2 + 64, data.y_max - 118, 268, FONT_LARGE_BLACK);
+        }
     }
 }
 

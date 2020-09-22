@@ -111,6 +111,7 @@ static void clear_scenario_data(void)
     figure_name_init();
     formations_clear();
     figure_route_clear_all();
+    clear_custom_events();
 
     game_time_init(2098);
 
@@ -406,7 +407,6 @@ int game_file_load_scenario_data_from_xml(const char* scenario_file)
 
     char* path_to_scenario_dir = get_scenario_dir_from_map_file_path(scenario_file);
 
-    // bug: data is not nulled out before reload
     char empire_filepath[FILE_NAME_MAX];
     strcpy(empire_filepath, path_to_scenario_dir);
     strcat(empire_filepath, "empire.xml");
@@ -424,27 +424,30 @@ int game_file_load_scenario_data_from_xml(const char* scenario_file)
 
 int game_file_load_saved_game(const char *filename)
 {
+    clear_custom_events();
+
     if (!game_file_io_read_saved_game(filename, 0)) {
         return 0;
     }
-
+    
     check_backward_compatibility();
     initialize_saved_game();
     building_storage_reset_building_ids();
 
-    char* path_to_scenario_dir = get_scenario_dir_from_map_file_path(scenario.scenario_name);
+    if (scenario.empire.id == 99) {
+        char* path_to_scenario_dir = get_scenario_dir_from_map_file_path(scenario.scenario_name);
 
-    char empire_filepath[FILE_NAME_MAX];
-    strcpy(empire_filepath, path_to_scenario_dir);
-    strcat(empire_filepath, "empire.xml");
+        char empire_filepath[FILE_NAME_MAX];
+        strcpy(empire_filepath, path_to_scenario_dir);
+        strcat(empire_filepath, "empire.xml");
 
-    //char scenario_filepath[FILE_NAME_MAX];
-    //strcpy(scenario_filepath, path_to_scenario_dir);
-    //strcat(scenario_filepath, "scenario.xml");
+        char scenario_filepath[FILE_NAME_MAX];
+        strcpy(scenario_filepath, path_to_scenario_dir);
+        strcat(scenario_filepath, "scenario.xml");
 
-    trade_prices_reset();
-    empire_load_from_file(empire_filepath);
-    //scenario_load_from_file(scenario_filepath);
+        empire_load_from_file(empire_filepath);
+        scenario_load_from_file(scenario_filepath);
+    }
 
     sound_music_update(1);
     return 1;

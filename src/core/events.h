@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define MAX_CUSTOM_EVENTS 100
+#define MAX_CUSTOM_EVENTS 180
 #define MAX_CONDITIONS 9
 
 typedef enum {
@@ -29,6 +29,13 @@ typedef int (*GetValueFunction)();
 
 typedef enum {
 	EVENT_TYPE_DEMAND_CHANGE,
+	EVENT_TYPE_PRICE_CHANGE,
+	EVENT_TYPE_REQUEST,
+	EVENT_TYPE_INVASION,
+	EVENT_TYPE_UPRISING,
+	EVENT_TYPE_DISTANT_BATTLE,
+	EVENT_TYPE_WAGE_CHANGE,
+	EVENT_TYPE_CITY_NOW_TRADES,
 	EVENT_TYPE_MAX_KEY
 } event_key;
 
@@ -50,18 +57,23 @@ typedef struct {
 } custom_event_type;
 
 typedef struct {
-	int fired;
 	uint8_t text[512];
 	int resource_id;
 	int amount;
+	int deadline_months;
+	int favor_gained;
 	uint8_t city_name[24];
 	uint8_t type[24];
+	int months_warning;
+	int entrypoint_id;
 } custom_event_data;
 
 typedef struct {
 	custom_event_data event_data;
 	event_condition conditions[MAX_CONDITIONS];
 	int in_use;
+	int fired;
+	int chance_to_fire;
 } custom_event;
 
 custom_event custom_events[MAX_CUSTOM_EVENTS];

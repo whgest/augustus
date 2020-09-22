@@ -366,8 +366,7 @@ int empire_object_update_animation(const empire_object *obj, int image_id)
 }
 
 void clear_empire_objects(void) {
-    // todo: actually clear these from memory
     for (int i = 0; i < MAX_OBJECTS; i++) {
-        objects[i].in_use = 0;
+        memset(&objects[i], 0, sizeof(full_empire_object));
     }
 }

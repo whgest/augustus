@@ -1,12 +1,14 @@
 #include "scenario.h"
 
 #include "city/resource.h"
+#include "core/events.h"
 #include "empire/trade_route.h"
 #include "game/difficulty.h"
 #include "game/settings.h"
 #include "scenario/data.h"
 
 struct scenario_t scenario;
+
 
 int scenario_is_saved(void)
 {
@@ -20,35 +22,43 @@ void scenario_save_state(buffer *buf)
     buffer_write_i16(buf, scenario.empire.id);
     buffer_skip(buf, 8);
 
-    // requests
-    for (int i = 0; i < MAX_REQUESTS; i++) {
-        buffer_write_i16(buf, scenario.requests[i].year);
+    if (scenario.empire.id == 99) {
+        int bytes = (MAX_REQUESTS * 4) + (MAX_INVASIONS * 5);
+        for (int i = 0; i < bytes; i++) {
+            buffer_write_i16(buf, custom_events[i].fired);
+        }
     }
-    for (int i = 0; i < MAX_REQUESTS; i++) {
-        buffer_write_i16(buf, scenario.requests[i].resource);
-    }
-    for (int i = 0; i < MAX_REQUESTS; i++) {
-        buffer_write_i16(buf, scenario.requests[i].amount);
-    }
-    for (int i = 0; i < MAX_REQUESTS; i++) {
-        buffer_write_i16(buf, scenario.requests[i].deadline_years);
-    }
+    else {
+        // requests
+        for (int i = 0; i < MAX_REQUESTS; i++) {
+            buffer_write_i16(buf, scenario.requests[i].year);
+        }
+        for (int i = 0; i < MAX_REQUESTS; i++) {
+            buffer_write_i16(buf, scenario.requests[i].resource);
+        }
+        for (int i = 0; i < MAX_REQUESTS; i++) {
+            buffer_write_i16(buf, scenario.requests[i].amount);
+        }
+        for (int i = 0; i < MAX_REQUESTS; i++) {
+            buffer_write_i16(buf, scenario.requests[i].deadline_years);
+        }
 
-    // invasions
-    for (int i = 0; i < MAX_INVASIONS; i++) {
-        buffer_write_i16(buf, scenario.invasions[i].year);
-    }
-    for (int i = 0; i < MAX_INVASIONS; i++) {
-        buffer_write_i16(buf, scenario.invasions[i].type);
-    }
-    for (int i = 0; i < MAX_INVASIONS; i++) {
-        buffer_write_i16(buf, scenario.invasions[i].amount);
-    }
-    for (int i = 0; i < MAX_INVASIONS; i++) {
-        buffer_write_i16(buf, scenario.invasions[i].from);
-    }
-    for (int i = 0; i < MAX_INVASIONS; i++) {
-        buffer_write_i16(buf, scenario.invasions[i].attack_type);
+        // invasions
+        for (int i = 0; i < MAX_INVASIONS; i++) {
+            buffer_write_i16(buf, scenario.invasions[i].year);
+        }
+        for (int i = 0; i < MAX_INVASIONS; i++) {
+            buffer_write_i16(buf, scenario.invasions[i].type);
+        }
+        for (int i = 0; i < MAX_INVASIONS; i++) {
+            buffer_write_i16(buf, scenario.invasions[i].amount);
+        }
+        for (int i = 0; i < MAX_INVASIONS; i++) {
+            buffer_write_i16(buf, scenario.invasions[i].from);
+        }
+        for (int i = 0; i < MAX_INVASIONS; i++) {
+            buffer_write_i16(buf, scenario.invasions[i].attack_type);
+        }
     }
 
     buffer_write_i16(buf, 0);
@@ -82,6 +92,7 @@ void scenario_save_state(buffer *buf)
     }
 
     // demand changes
+
     for (int i = 0; i < MAX_DEMAND_CHANGES; i++) {
         buffer_write_i16(buf, scenario.demand_changes[i].year);
     }
@@ -234,37 +245,43 @@ void scenario_load_state(buffer *buf)
     scenario.empire.id = buffer_read_i16(buf);
     buffer_skip(buf, 8);
 
+    if (scenario.empire.id == 99) {
+        int bytes = (MAX_REQUESTS * 4) + (MAX_INVASIONS * 5);
+        for (int i = 0; i < bytes; i++) {
+            fired_events[i] = buffer_read_i16(buf);
+        }
+    }
+    else {
+        // requests
+        for (int i = 0; i < MAX_REQUESTS; i++) {
+            scenario.requests[i].year = buffer_read_i16(buf);
+        }
+        for (int i = 0; i < MAX_REQUESTS; i++) {
+            scenario.requests[i].resource = buffer_read_i16(buf);
+        }
+        for (int i = 0; i < MAX_REQUESTS; i++) {
+            scenario.requests[i].amount = buffer_read_i16(buf);
+        }
+        for (int i = 0; i < MAX_REQUESTS; i++) {
+            scenario.requests[i].deadline_years = buffer_read_i16(buf);
+        }
 
-
-    // requests
-    for (int i = 0; i < MAX_REQUESTS; i++) {
-        scenario.requests[i].year = buffer_read_i16(buf);
-    }
-    for (int i = 0; i < MAX_REQUESTS; i++) {
-        scenario.requests[i].resource = buffer_read_i16(buf);
-    }
-    for (int i = 0; i < MAX_REQUESTS; i++) {
-        scenario.requests[i].amount = buffer_read_i16(buf);
-    }
-    for (int i = 0; i < MAX_REQUESTS; i++) {
-        scenario.requests[i].deadline_years = buffer_read_i16(buf);
-    }
-
-    // invasions
-    for (int i = 0; i < MAX_INVASIONS; i++) {
-        scenario.invasions[i].year = buffer_read_i16(buf);
-    }
-    for (int i = 0; i < MAX_INVASIONS; i++) {
-        scenario.invasions[i].type = buffer_read_i16(buf);
-    }
-    for (int i = 0; i < MAX_INVASIONS; i++) {
-        scenario.invasions[i].amount = buffer_read_i16(buf);
-    }
-    for (int i = 0; i < MAX_INVASIONS; i++) {
-        scenario.invasions[i].from = buffer_read_i16(buf);
-    }
-    for (int i = 0; i < MAX_INVASIONS; i++) {
-        scenario.invasions[i].attack_type = buffer_read_i16(buf);
+        // invasions
+        for (int i = 0; i < MAX_INVASIONS; i++) {
+            scenario.invasions[i].year = buffer_read_i16(buf);
+        }
+        for (int i = 0; i < MAX_INVASIONS; i++) {
+            scenario.invasions[i].type = buffer_read_i16(buf);
+        }
+        for (int i = 0; i < MAX_INVASIONS; i++) {
+            scenario.invasions[i].amount = buffer_read_i16(buf);
+        }
+        for (int i = 0; i < MAX_INVASIONS; i++) {
+            scenario.invasions[i].from = buffer_read_i16(buf);
+        }
+        for (int i = 0; i < MAX_INVASIONS; i++) {
+            scenario.invasions[i].attack_type = buffer_read_i16(buf);
+        }
     }
 
     buffer_skip(buf, 2);

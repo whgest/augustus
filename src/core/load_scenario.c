@@ -11,10 +11,13 @@
 #include "empire/object.h"
 
 #include "scenario/data.h"
+#include "scenario/scenario.h"
 
 #include "expat.h"
 
 #include <string.h>
+
+#define MAX_TAG_TYPES 5
 
 static struct {
     struct {
@@ -31,31 +34,47 @@ static struct {
     } xml;
 } scenario_data;
 
-static const char SCEN_XML_FILE_ELEMENTS[XML_MAX_DEPTH][XML_MAX_ELEMENTS_PER_DEPTH][XML_TAG_MAX_LENGTH] = { { "scenario" }, { "description", "demandChange" }, { "condition" } };
+static const char SCEN_XML_FILE_ELEMENTS[XML_MAX_DEPTH][XML_MAX_ELEMENTS_PER_DEPTH][XML_TAG_MAX_LENGTH] = { { "scenario" }, { "description", "event", "invasion" }, { "condition" } };
 static const char SCEN_XML_FILE_ATTRIBUTES[XML_MAX_DEPTH][XML_MAX_ELEMENTS_PER_DEPTH][XML_MAX_ATTRIBUTES][XML_TAG_MAX_LENGTH] = {
     { { "name", "startDate", "author" } }, // scenario
     { 
         { "tagline", "text" }, // description
-        { "text", "cityName", "resourceId", "amount",  } //event
+        { "text", "chanceToFire", "cityName", "resourceId", "amount", "deadlineMonths", "favorGained"  }, //event
+        { "entrypointId", "amount", "monthsWarning" }, //invasion
     },
     { { "value", "requirement" } } //condition
+};
+
+static const char EVENT_TYPE_TAGS[MAX_TAG_TYPES][24] = {
+    "demandChange",
+    "priceChange",
+    "request",
+    "cityNowTrades",
+    "wageChange"
+};
+
+static const char INVASION_TYPE_TAGS[MAX_TAG_TYPES][24] = {
+    "uprising",
+    "distantBattle"
 };
 
 static void scen_xml_start_scenario_element(const char** attributes);
 static void scen_xml_start_description_element(const char** attributes);
 static void scen_xml_start_event_element(const char** attributes);
+static void scen_xml_start_invasion_element(const char** attributes);
 static void scen_xml_start_condition_element(const char** attributes);
 static void scen_xml_end_scenario_element(void);
 static void scen_xml_end_description_element(void);
 static void scen_xml_end_event_element(void);
+static void scen_xml_end_invasion_element(void);
 static void scen_xml_end_condition_element(void);
 
 static void (*scen_xml_start_element_callback[XML_MAX_DEPTH][XML_MAX_ELEMENTS_PER_DEPTH])(const char** attributes) = {
-    { scen_xml_start_scenario_element }, { scen_xml_start_description_element, scen_xml_start_event_element }, { scen_xml_start_condition_element }
+    { scen_xml_start_scenario_element }, { scen_xml_start_description_element, scen_xml_start_event_element, scen_xml_start_invasion_element }, { scen_xml_start_condition_element }
 };
 
 static void (*scen_xml_end_element_callback[XML_MAX_DEPTH][XML_MAX_ELEMENTS_PER_DEPTH])(void) = {
-    { scen_xml_end_scenario_element }, { scen_xml_end_description_element, scen_xml_end_event_element }, { scen_xml_end_condition_element }
+    { scen_xml_end_scenario_element }, { scen_xml_end_description_element, scen_xml_end_event_element, scen_xml_end_invasion_element }, { scen_xml_end_condition_element }
 };
 
 // import?
@@ -114,17 +133,43 @@ static void scen_xml_start_event_element(const char** attributes)
             strcpy(scenario_data.xml.current_event.event_data.text, string_from_ascii(attributes[i + 1]));
         }
         if (strcmp(attributes[i], SCEN_XML_FILE_ATTRIBUTES[1][1][1]) == 0) {
-            strcpy(scenario_data.xml.current_event.event_data.city_name, string_from_ascii(attributes[i + 1]));
+            scenario_data.xml.current_event.chance_to_fire = string_to_int(string_from_ascii(attributes[i + 1]));
         }
         if (strcmp(attributes[i], SCEN_XML_FILE_ATTRIBUTES[1][1][2]) == 0) {
-            scenario_data.xml.current_event.event_data.resource_id = string_to_int(string_from_ascii(attributes[i + 1]));
+            strcpy(scenario_data.xml.current_event.event_data.city_name, string_from_ascii(attributes[i + 1]));
         }
         if (strcmp(attributes[i], SCEN_XML_FILE_ATTRIBUTES[1][1][3]) == 0) {
+            scenario_data.xml.current_event.event_data.resource_id = string_to_int(string_from_ascii(attributes[i + 1]));
+        }
+        if (strcmp(attributes[i], SCEN_XML_FILE_ATTRIBUTES[1][1][4]) == 0) {
             scenario_data.xml.current_event.event_data.amount = string_to_int(string_from_ascii(attributes[i + 1]));
+        }
+        if (strcmp(attributes[i], SCEN_XML_FILE_ATTRIBUTES[1][1][5]) == 0) {
+            scenario_data.xml.current_event.event_data.deadline_months = string_to_int(string_from_ascii(attributes[i + 1]));
+        }
+        if (strcmp(attributes[i], SCEN_XML_FILE_ATTRIBUTES[1][1][6]) == 0) {
+            scenario_data.xml.current_event.event_data.favor_gained = string_to_int(string_from_ascii(attributes[i + 1]));
         }
     }
 }
 
+static void scen_xml_start_invasion_element(const char** attributes)
+{
+    strcpy(scenario_data.xml.current_event.event_data.type, string_from_ascii(scenario_data.xml.current_tag));
+
+    int total_attributes = count_xml_attributes(attributes);
+    for (int i = 0; i < total_attributes; i += 2) {
+        if (strcmp(attributes[i], SCEN_XML_FILE_ATTRIBUTES[1][2][0]) == 0) {
+            scenario_data.xml.current_event.event_data.entrypoint_id = string_to_int(string_from_ascii(attributes[i + 1]));
+        }
+        if (strcmp(attributes[i], SCEN_XML_FILE_ATTRIBUTES[1][2][1]) == 0) {
+            scenario_data.xml.current_event.event_data.amount = string_to_int(string_from_ascii(attributes[i + 1]));
+        }
+        if (strcmp(attributes[i], SCEN_XML_FILE_ATTRIBUTES[1][2][2]) == 0) {
+            scenario_data.xml.current_event.event_data.months_warning = string_to_int(string_from_ascii(attributes[i + 1]));
+        }
+    }
+}
 static void scen_xml_start_condition_element(const char** attributes)
 {
     int total_attributes = count_xml_attributes(attributes);
@@ -153,21 +198,49 @@ static void scen_xml_end_description_element(void)
 static void scen_xml_end_event_element(void)
 {
     scenario_data.xml.current_event.in_use = 1;
+    if (fired_events[scenario_data.xml.total_custom_events]) {
+        scenario_data.xml.current_event.fired = 1;
+    }
     custom_events[scenario_data.xml.total_custom_events] = scenario_data.xml.current_event;
     scenario_data.xml.total_conditions_for_current_event = 0;
     scenario_data.xml.total_custom_events++;
+    memset(&scenario_data.xml.current_event, 0, sizeof(custom_event));
 }
 
+static void scen_xml_end_invasion_element(void)
+{
+    scenario_data.xml.current_event.in_use = 1;
+    if (fired_events[scenario_data.xml.total_custom_events]) {
+        scenario_data.xml.current_event.fired = 1;
+    }
+    custom_events[scenario_data.xml.total_custom_events] = scenario_data.xml.current_event;
+    scenario_data.xml.total_conditions_for_current_event = 0;
+    scenario_data.xml.total_custom_events++;
+    memset(&scenario_data.xml.current_event, 0, sizeof(custom_event));
+}
 
 static void scen_xml_end_condition_element(void)
 {
     scenario_data.xml.total_conditions_for_current_event++;
 }
 
-
 // import?
 static int get_element_index(const char* name)
 {
+    for (int i = 0; i < MAX_TAG_TYPES; ++i) {
+        if (strcmp(name, EVENT_TYPE_TAGS[i]) == 0) {
+            name = "event";
+            continue;
+        }
+    }    
+
+    for (int i = 0; i < MAX_TAG_TYPES; ++i) {
+        if (strcmp(name, INVASION_TYPE_TAGS[i]) == 0) {
+            name = "invasion";
+            continue;
+        }
+    }
+    
     for (int i = 0; i < XML_MAX_ELEMENTS_PER_DEPTH; ++i) {
         if (SCEN_XML_FILE_ELEMENTS[scenario_data.xml.depth][i][0] == 0) {
             continue;
@@ -266,6 +339,13 @@ static void process_file(const char* xml_file_name)
 
 void scenario_load_from_file(const char* file_path)
 {
+   
     process_file(file_path);
 
+}
+
+void clear_custom_events(void) {
+    for (int i = 0; i < MAX_CUSTOM_EVENTS; i++) {
+        memset(&custom_events[i], 0, sizeof(custom_event));
+    }
 }
