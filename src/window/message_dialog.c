@@ -23,6 +23,9 @@
 #include "window/advisors.h"
 #include "window/city.h"
 
+#include "core/events.h"
+#include <string.h>
+
 #define MAX_HISTORY 200
 
 static void draw_foreground_video(void);
@@ -146,6 +149,17 @@ static int is_problem_message(const lang_message *msg)
 
 static void draw_city_message_text(const lang_message *msg)
 {
+    // terrible hack for custom text
+    uint8_t to_draw[512];
+
+    if (strlen(MESSAGE_TEXT_OVERRIDE) > 0) {
+        strcpy(to_draw, MESSAGE_TEXT_OVERRIDE);
+        strcpy(MESSAGE_TEXT_OVERRIDE, "");
+    }
+    else {
+        strcpy(to_draw, msg->content.text);
+    }
+    
     if (msg->message_type != MESSAGE_TYPE_TUTORIAL) {
         int width = lang_text_draw(25, player_message.month, data.x_text + 10, data.y_text + 6, FONT_NORMAL_WHITE);
         width += lang_text_draw_year(player_message.year, data.x_text + 12 + width, data.y_text + 6, FONT_NORMAL_WHITE);
@@ -166,7 +180,7 @@ static void draw_city_message_text(const lang_message *msg)
         case MESSAGE_TYPE_DISASTER:
         case MESSAGE_TYPE_INVASION:
             lang_text_draw(12, 1, data.x + 100, data.y_text + 44, FONT_NORMAL_WHITE);
-            rich_text_draw(msg->content.text, data.x_text + 8, data.y_text + 86,
+            rich_text_draw(to_draw, data.x_text + 8, data.y_text + 86,
                 16 * data.text_width_blocks, data.text_height_blocks - 1, 0);
             break;
 
@@ -177,13 +191,13 @@ static void draw_city_message_text(const lang_message *msg)
                 lang_text_draw_multiline(12, low_mood_cause + 2,
                     data.x + 64, data.y_text + 44, max_width, FONT_NORMAL_WHITE);
             }
-            rich_text_draw(msg->content.text,
+            rich_text_draw(to_draw,
                 data.x_text + 8, data.y_text + 86, 16 * (data.text_width_blocks - 1),
                 data.text_height_blocks - 1, 0);
             break;
         }
         case MESSAGE_TYPE_TUTORIAL:
-            rich_text_draw(msg->content.text,
+            rich_text_draw(to_draw,
                 data.x_text + 8, data.y_text + 6, 16 * data.text_width_blocks - 16,
                 data.text_height_blocks - 1, 0);
             break;
@@ -192,7 +206,7 @@ static void draw_city_message_text(const lang_message *msg)
             image_draw(resource_image(player_message.param2), data.x + 64, data.y_text + 40);
             lang_text_draw(21, empire_city_get(player_message.param1)->name_id,
                 data.x + 100, data.y_text + 44, FONT_NORMAL_WHITE);
-            rich_text_draw(msg->content.text,
+            rich_text_draw(to_draw,
                 data.x_text + 8, data.y_text + 86, 16 * data.text_width_blocks - 16,
                 data.text_height_blocks - 1, 0);
             break;
@@ -200,13 +214,13 @@ static void draw_city_message_text(const lang_message *msg)
         case MESSAGE_TYPE_PRICE_CHANGE:
             image_draw(resource_image(player_message.param2), data.x + 64, data.y_text + 40);
             text_draw_money(player_message.param1, data.x + 100, data.y_text + 44, FONT_NORMAL_WHITE);
-            rich_text_draw(msg->content.text,
+            rich_text_draw(to_draw,
                 data.x_text + 8, data.y_text + 86, 16 * data.text_width_blocks - 16,
                 data.text_height_blocks - 1, 0);
             break;
 
         default: {
-            int lines = rich_text_draw(msg->content.text,
+            int lines = rich_text_draw(to_draw,
                 data.x_text + 8, data.y_text + 56, 16 * data.text_width_blocks - 16,
                 data.text_height_blocks - 1, 0);
             if (msg->message_type == MESSAGE_TYPE_IMPERIAL) {
@@ -286,6 +300,9 @@ static void draw_content(const lang_message *msg)
     if (!msg->content.text) {
         return;
     }
+
+
+
     int header_offset = msg->type == TYPE_MANUAL ? 48 : 32;
     data.text_height_blocks = msg->height_blocks - 1 - (header_offset + data.y_text - data.y) / 16;
     data.text_width_blocks = rich_text_init(msg->content.text,
@@ -327,6 +344,18 @@ static void draw_background_video(void)
     data.x = 32;
     data.y = 28;
 
+    // terrible hack for custom text
+    uint8_t to_draw[512];
+
+    if (strlen(MESSAGE_TEXT_OVERRIDE) > 0) {
+        strcpy(to_draw, MESSAGE_TEXT_OVERRIDE);
+        strcpy(MESSAGE_TEXT_OVERRIDE, "");
+    }
+    else {
+        strcpy(to_draw, msg->content.text);
+    }
+
+
     int small_font = 0;
     int lines_available = 4;
     if (msg->type == TYPE_MESSAGE && msg->message_type == MESSAGE_TYPE_IMPERIAL) {
@@ -334,11 +363,11 @@ static void draw_background_video(void)
     }
     rich_text_set_fonts(FONT_NORMAL_WHITE, FONT_NORMAL_RED);
     rich_text_clear_links();
-    int lines_required = rich_text_draw(msg->content.text, 0, 0, 384, lines_available, 1);
+    int lines_required = rich_text_draw(to_draw, 0, 0, 384, lines_available, 1);
     if (lines_required > lines_available) {
         small_font = 1;
         rich_text_set_fonts(FONT_SMALL_PLAIN, FONT_SMALL_PLAIN);
-        lines_required = rich_text_draw(msg->content.text, 0, 0, 384, lines_available, 1);
+        lines_required = rich_text_draw(to_draw, 0, 0, 384, lines_available, 1);
     }
 
     outer_panel_draw(data.x, data.y, 26, 28);
@@ -370,10 +399,10 @@ static void draw_background_video(void)
     data.text_width_blocks = msg->width_blocks - 4;
     if (small_font) {
         // Draw in black and then white to create shadow effect
-        rich_text_draw_colored(msg->content.text, data.x + 16 + 1, y_base + 24 + 1, 384, data.text_height_blocks - 1, COLOR_BLACK);
-        rich_text_draw_colored(msg->content.text, data.x + 16, y_base + 24, 384, data.text_height_blocks - 1, COLOR_WHITE);
+        rich_text_draw_colored(to_draw, data.x + 16 + 1, y_base + 24 + 1, 384, data.text_height_blocks - 1, COLOR_BLACK);
+        rich_text_draw_colored(to_draw, data.x + 16, y_base + 24, 384, data.text_height_blocks - 1, COLOR_WHITE);
     } else {
-        rich_text_draw(msg->content.text, data.x + 16, y_base + 24, 384, data.text_height_blocks - 1, 0);
+        rich_text_draw(to_draw, data.x + 16, y_base + 24, 384, data.text_height_blocks - 1, 0);
     }
 
     if (msg->type == TYPE_MESSAGE && msg->message_type == MESSAGE_TYPE_IMPERIAL) {

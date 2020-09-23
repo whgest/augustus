@@ -40,7 +40,7 @@ static const char SCEN_XML_FILE_ATTRIBUTES[XML_MAX_DEPTH][XML_MAX_ELEMENTS_PER_D
     { 
         { "tagline", "text" }, // description
         { "text", "chanceToFire", "cityName", "resourceId", "amount", "deadlineMonths", "favorGained"  }, //event
-        { "entrypointId", "amount", "monthsWarning" }, //invasion
+        { "text", "entrypointId", "amount", "monthsWarning" }, //invasion
     },
     { { "value", "requirement" } } //condition
 };
@@ -159,13 +159,16 @@ static void scen_xml_start_invasion_element(const char** attributes)
 
     int total_attributes = count_xml_attributes(attributes);
     for (int i = 0; i < total_attributes; i += 2) {
-        if (strcmp(attributes[i], SCEN_XML_FILE_ATTRIBUTES[1][2][0]) == 0) {
-            scenario_data.xml.current_event.event_data.entrypoint_id = string_to_int(string_from_ascii(attributes[i + 1]));
+        if (strcmp(attributes[i], SCEN_XML_FILE_ATTRIBUTES[1][1][0]) == 0) {
+            strcpy(scenario_data.xml.current_event.event_data.text, string_from_ascii(attributes[i + 1]));
         }
         if (strcmp(attributes[i], SCEN_XML_FILE_ATTRIBUTES[1][2][1]) == 0) {
-            scenario_data.xml.current_event.event_data.amount = string_to_int(string_from_ascii(attributes[i + 1]));
+            scenario_data.xml.current_event.event_data.entrypoint_id = string_to_int(string_from_ascii(attributes[i + 1]));
         }
         if (strcmp(attributes[i], SCEN_XML_FILE_ATTRIBUTES[1][2][2]) == 0) {
+            scenario_data.xml.current_event.event_data.amount = string_to_int(string_from_ascii(attributes[i + 1]));
+        }
+        if (strcmp(attributes[i], SCEN_XML_FILE_ATTRIBUTES[1][2][3]) == 0) {
             scenario_data.xml.current_event.event_data.months_warning = string_to_int(string_from_ascii(attributes[i + 1]));
         }
     }

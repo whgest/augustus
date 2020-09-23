@@ -262,7 +262,11 @@ void custom_events_process() {
 		if (custom_events[i].in_use && !custom_events[i].fired) {
 			if (test_conditions_for_event(custom_events[i])) {
 				custom_event_type event_type = get_event_type(custom_events[i].event_data);
+				//message text hack
+				strcpy(MESSAGE_TEXT_OVERRIDE, custom_events[i].event_data.text);
+
 				event_type.activation_function(custom_events[i].event_data);
+
 				custom_events[i].fired = 1;
 			}
 		}
