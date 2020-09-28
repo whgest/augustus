@@ -9,7 +9,10 @@
 #include "game/time.h"
 #include "graphics/window.h"
 #include "sound/effect.h"
+#include "sound/speech.h"
 #include "window/message_dialog.h"
+
+#include <string.h>
 
 #define MAX_MESSAGES 1000
 #define MAX_QUEUE 20
@@ -127,10 +130,20 @@ static void enqueue_message(int sequence)
 
 static void play_sound(int text_id)
 {
-    if (lang_get_message(text_id)->urgent == 1) {
-        sound_effect_play(SOUND_EFFECT_FANFARE_URGENT);
-    } else {
-        sound_effect_play(SOUND_EFFECT_FANFARE);
+    uint8_t *custom_sound_filename = lang_get_message(text_id)->custom_sound_filename;
+    uint8_t path[32] = "wavs/";
+    if (custom_sound_filename) {
+        strcat(path, custom_sound_filename);
+        strcat(path, ".wav");
+        sound_speech_play_file(path);      
+    }
+    else {
+        if (lang_get_message(text_id)->urgent == 1) {
+            sound_effect_play(SOUND_EFFECT_FANFARE_URGENT);
+        }
+        else {
+            sound_effect_play(SOUND_EFFECT_FANFARE);
+        }
     }
 }
 
@@ -145,17 +158,6 @@ static void show_message_popup(int message_id)
         play_sound(text_id);
     }
     window_message_dialog_show_city_message(text_id,
-        msg->year, msg->month, msg->param1, msg->param2,
-        city_message_get_advisor(msg->message_type), 1);
-}
-
-static void show_custom_message_popup(int message_id)
-{
-    city_message* msg = &data.messages[message_id];
-    data.consecutive_message_delay = 5;
-    msg->is_read = 1;
-
-    window_message_dialog_show_city_message(1,
         msg->year, msg->month, msg->param1, msg->param2,
         city_message_get_advisor(msg->message_type), 1);
 }
@@ -208,45 +210,6 @@ void city_message_post(int use_popup, int message_type, int param1, int param2)
         play_sound(text_id);
     }
     should_play_sound = 1;
-}
-
-
-void city_custom_message_post(int use_popup, uint8_t text, int param1, int param2)
-{
-    int id = new_message_id();
-    if (id < 0) {
-        return;
-    }
-    data.total_messages++;
-    data.current_message_id = id;
-
-    city_message* msg = &data.messages[id];
-    msg->custom_message = text;
-    msg->is_read = 0;
-    msg->year = game_time_year();
-    msg->month = game_time_month();
-    msg->param1 = param1;
-    msg->param2 = param2;
-    msg->sequence = data.next_message_sequence++;
-
-    //int text_id = city_message_get_text_id(message_type);
-    //lang_message_type lang_msg_type = lang_get_message(text_id)->message_type;
-    //if (lang_msg_type == MESSAGE_TYPE_DISASTER || lang_msg_type == MESSAGE_TYPE_INVASION) {
-    //    data.problem_count = 1;
-    //    window_invalidate();
-    //}
-
-    if (use_popup && window_is(WINDOW_CITY)) {
-        show_custom_message_popup(id);
-    }
-    else if (use_popup) {
-        // add to queue to be processed when player returns to city
-        enqueue_message(msg->sequence);
-    }
-    //else if (should_play_sound) {
-    //    play_sound(text_id);
-    //}
-    //should_play_sound = 1;
 }
 
 void city_message_post_with_popup_delay(message_category category, int message_type, int param1, short param2)

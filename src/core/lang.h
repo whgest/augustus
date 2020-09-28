@@ -66,6 +66,8 @@ typedef struct {
     struct lang_message_string subtitle;
     struct lang_message_string video;
     struct lang_message_string content;
+    struct lang_message_string signature;
+    uint8_t *custom_sound_filename;
 } lang_message;
 
 /**
@@ -96,5 +98,9 @@ const uint8_t *lang_get_string(int group, int index);
  * @return Message
  */
 const lang_message *lang_get_message(int id);
+
+lang_message *get_next_message_entry(void);
+
+int get_next_message_index(void);
 
 #endif // CORE_LANG_H

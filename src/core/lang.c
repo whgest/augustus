@@ -15,6 +15,7 @@
 #define MIN_TEXT_SIZE (28 + MAX_TEXT_ENTRIES * 8)
 #define MAX_TEXT_SIZE (MIN_TEXT_SIZE + MAX_TEXT_DATA)
 
+#define DEFAULT_USED_MESSAGE_ENTRIES 320
 #define MAX_MESSAGE_ENTRIES 400
 #define MAX_MESSAGE_DATA 460000
 #define MIN_MESSAGE_SIZE 32024
@@ -192,4 +193,24 @@ const uint8_t *lang_get_string(int group, int index)
 const lang_message *lang_get_message(int id)
 {
     return &data.message_entries[id];
+}
+
+lang_message *get_next_message_entry(void) {
+    for (int i = DEFAULT_USED_MESSAGE_ENTRIES; i <= MAX_MESSAGE_ENTRIES; ++i) {
+        if (strlen(&data.message_entries[i].content.text) == 0) {
+            return &data.message_entries[i];
+        }
+    }
+
+    return &data.message_entries[MAX_MESSAGE_ENTRIES];
+}
+
+int get_next_message_index(void) {
+    for (int i = DEFAULT_USED_MESSAGE_ENTRIES; i <= MAX_MESSAGE_ENTRIES; ++i) {
+        if (strlen(&data.message_entries[i].content.text) == 0) {
+            return i;
+        }
+    }
+
+    return &data.message_entries[MAX_MESSAGE_ENTRIES];
 }

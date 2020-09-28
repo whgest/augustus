@@ -2,6 +2,8 @@
 #define EVENTS_H
 
 #include <stdint.h>
+#include "core/lang.h"
+#include "city/message.h"
 
 #define MAX_CUSTOM_EVENTS 180
 #define MAX_CONDITIONS 9
@@ -38,6 +40,7 @@ typedef enum {
 	EVENT_TYPE_DISTANT_BATTLE,
 	EVENT_TYPE_WAGE_CHANGE,
 	EVENT_TYPE_CITY_NOW_TRADES,
+	EVENT_TYPE_MESSAGE,
 	EVENT_TYPE_MAX_KEY
 } event_key;
 
@@ -45,6 +48,7 @@ typedef struct {
 	condition_key key;
 	uint8_t value_type_string[24];
 	GetValueFunction actual_value_function;
+
 } condition_value;
 
 typedef struct {
@@ -56,10 +60,16 @@ typedef struct {
 	event_key key;
 	uint8_t event_type_string[24];
 	EventActivationFunction activation_function;
+	city_message_type city_message_type;
 } custom_event_type;
 
 typedef struct {
-	uint8_t text[512];
+	uint8_t text[1024];
+	uint8_t header[128];
+	uint8_t signature[128];
+	uint8_t title[128];
+	uint8_t sound[24];
+	int advisor_id;
 	int resource_id;
 	int amount;
 	int deadline_months;
@@ -68,6 +78,8 @@ typedef struct {
 	uint8_t type[24];
 	int months_warning;
 	int entrypoint_id;
+	int message_id;
+
 } custom_event_data;
 
 typedef struct {
@@ -81,5 +93,7 @@ typedef struct {
 custom_event custom_events[MAX_CUSTOM_EVENTS];
 
 void custom_events_process();
+
+void load_all_custom_messages();
 
 #endif

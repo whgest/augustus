@@ -143,6 +143,7 @@ typedef enum {
     MESSAGE_FISHING_BOAT_BLOCKED = 118,
     MESSAGE_TUTORIAL_HEALTH = 119,
     MESSAGE_LOCAL_UPRISING_MARS = 121,
+    MESSAGE_CUSTOM_FROM_XML = 122
 } city_message_type;
 
 typedef struct {
@@ -153,7 +154,6 @@ typedef struct {
     int param1;
     int param2;
     int is_read;
-    uint8_t custom_message;
 } city_message;
 
 void city_message_init_scenario(void);
@@ -166,7 +166,7 @@ void city_message_apply_sound_interval(message_category category);
 
 void city_message_post(int use_popup, int message_type, int param1, int param2);
 
-void city_custom_message_post(int use_popup, uint8_t text, int param1, int param2);
+void custom_message_post(uint8_t text, uint8_t header, uint8_t signature, int advisor_id, uint8_t sound);
 
 void city_message_post_with_popup_delay(message_category category, int message_type, int param1, short param2);
 
