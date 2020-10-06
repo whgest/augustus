@@ -22,4 +22,6 @@ void city_festival_schedule(void);
 void city_festival_update(void);
 void city_festival_calculate_costs(void);
 
+void festival_sentiment_and_deity(int size, int god_id);
+
 #endif // CITY_FESTIVAL_H

@@ -1,9 +1,13 @@
 #include "time.h"
 #include "events.h"
+#include "city/constants.h"
+#include "city/festival.h"
 #include "city/finance.h"
 #include "city/labor.h"
 #include "city/population.h"
 #include "city/ratings.h"
+#include "city/sentiment.h"
+#include "city/victory.h"
 #include "empire/city.h"
 #include "empire/object.h"
 #include "empire/trade_prices.h"
@@ -16,6 +20,13 @@
 #include <string.h>
 #include <math.h>
 
+static god_mapping god_mappings[] = {
+	{"ceres", GOD_CERES},
+	{"neptune", GOD_NEPTUNE},
+	{"mercury", GOD_MERCURY},
+	{"mars", GOD_MARS},
+	{"venus", GOD_VENUS}
+};
 
 int get_months_passed() {
 	return get_total_months();
@@ -212,6 +223,26 @@ void show_message(custom_event_data event_data) {
 	city_message_post(1, event_data.message_id, 0, 0);
 }
 
+void start_festival(custom_event_data event_data) {
+	int god_id;
+	for (int i = 0; i <= 4; ++i) {
+		if (strcmp(event_data.god, god_mappings[i].god_string) == 0) {
+			god_id = god_mappings[i].god_id;
+		}
+	}
+	festival_sentiment_and_deity(event_data.size, god_id);
+	if (event_data.message_id) {
+		city_message_post(1, event_data.message_id, 0, 0);
+	}
+	else {
+		city_message_post(1, MESSAGE_SMALL_FESTIVAL, 0, 0);
+	}
+}
+
+void declare_victory() {
+	city_victory_force_win();
+}
+
 static condition_value all_condition_values[] = {
 	{CONDITION_VALUE_MONTHS_PASSED, "monthsPassed", get_months_passed},
 	{CONDITION_VALUE_RATING_CULTURE, "culture", city_rating_culture},
@@ -221,8 +252,8 @@ static condition_value all_condition_values[] = {
 	{CONDITION_VALUE_MONEY, "treasury", city_finance_treasury},
 	{CONDITION_VALUE_POPULATION, "population", city_population},
 	//{CONDITION_VALUE_TRADE_CITY_OPEN, "tradeRouteIsOpen"},
-	//{CONDITION_VALUE_CITY_SENTIMENT, "sentiment"},
-	//{CONDITION_VALUE_PATRICIANS, "numPatricians"},
+	{CONDITION_VALUE_CITY_SENTIMENT, "sentiment", city_sentiment}, // 0-100
+	{CONDITION_VALUE_PATRICIANS, "numPatricians", city_population_in_villas_palaces},
 	{CONDITION_VALUE_PERCENT_IN_TENTS, "percentTents", percentage_city_population_in_tents_shacks},
 	{CONDITION_VALUE_PERCENT_PATRICIANS, "percentPatricians", percentage_city_population_in_villas_palaces},
 	//{CONDITION_VALUE_PERCENT_UNEMPLOYED, "percentUnemployed"},
@@ -237,10 +268,19 @@ static custom_event_type all_custom_event_types[] = {
 	{EVENT_TYPE_UPRISING, "uprising", start_custom_invasion, MESSAGE_DISTANT_BATTLE},
 	{EVENT_TYPE_DISTANT_BATTLE, "distantBattle", start_custom_invasion, MESSAGE_CAESAR_REQUESTS_ARMY},
 	//{EVENT_TYPE_EARTHQUAKE, "earthquake", start_earthquake},
+	//{EVENT_TYPE_TRADE_BLOCK, "earthquake", start_earthquake},
+	//{EVENT_TYPE_PLAGUE}
+	//{EVENT_TYPE_RIOTS}
+	//{EVENT_TYPE_SENTIMENT}
+	//{EVENT_TYPE_CITY_FALLS, "cityNowTrades", city_now_trades, MESSAGE_EMPIRE_HAS_EXPANDED},
 	{EVENT_TYPE_WAGE_CHANGE, "wageChange", perform_wage_change, MESSAGE_ROME_RAISES_WAGES},
 	{EVENT_TYPE_CITY_NOW_TRADES, "cityNowTrades", city_now_trades, MESSAGE_EMPIRE_HAS_EXPANDED},
-	{EVENT_TYPE_MESSAGE, "message", show_message, 2}
+	{EVENT_TYPE_MESSAGE, "message", show_message, 2},
+	{EVENT_TYPE_FESTIVAL, "festival", start_festival, MESSAGE_SMALL_FESTIVAL},
+	{EVENT_TYPE_VICTORY, "victory", declare_victory, 2}
 };
+
+
 
 custom_event_type get_event_type(custom_event_data event_data) {
 	int valueType;

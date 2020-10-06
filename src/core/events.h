@@ -41,6 +41,8 @@ typedef enum {
 	EVENT_TYPE_WAGE_CHANGE,
 	EVENT_TYPE_CITY_NOW_TRADES,
 	EVENT_TYPE_MESSAGE,
+	EVENT_TYPE_FESTIVAL,
+	EVENT_TYPE_VICTORY,
 	EVENT_TYPE_MAX_KEY
 } event_key;
 
@@ -64,6 +66,11 @@ typedef struct {
 } custom_event_type;
 
 typedef struct {
+	uint8_t god_string[10];
+	int god_id;
+} god_mapping;
+
+typedef struct {
 	uint8_t text[1024];
 	uint8_t header[128];
 	uint8_t signature[128];
@@ -79,6 +86,8 @@ typedef struct {
 	int months_warning;
 	int entrypoint_id;
 	int message_id;
+	int size;
+	uint8_t god[10];
 
 } custom_event_data;
 

@@ -515,3 +515,11 @@ int percentage_city_population_in_villas_palaces(void) {
 
     return calc_percentage(city_data.population.people_in_villas_palaces, city_data.population.population);
 }
+
+int city_population_in_villas_palaces(void) {
+    if (!city_data.population.population) {
+        return 0;
+    }
+
+    return city_data.population.people_in_villas_palaces;
+}

@@ -17,7 +17,7 @@
 
 #include <string.h>
 
-#define MAX_TAG_TYPES 5
+#define MAX_TAG_TYPES 7
 
 static struct {
     struct {
@@ -39,7 +39,7 @@ static const char SCEN_XML_FILE_ATTRIBUTES[XML_MAX_DEPTH][XML_MAX_ELEMENTS_PER_D
     { { "name", "startDate", "author" } }, // scenario
     { 
         { "tagline", "text" }, // description
-        { "text", "title", "cityName", "resourceId", "amount", "deadlineMonths", "favorGained" }, //event
+        { "text", "title", "cityName", "resourceId", "amount", "deadlineMonths", "favorGained", "size", "god" }, //event
         { "text", "entrypointId", "amount", "monthsWarning" }, //invasion
         { "text", "title", "header", "signature",  "sound", "advisorId"} //message
     },
@@ -51,7 +51,9 @@ static const char EVENT_TYPE_TAGS[MAX_TAG_TYPES][24] = {
     "priceChange",
     "request",
     "cityNowTrades",
-    "wageChange"
+    "wageChange",
+    "festival",
+    "victory"
 };
 
 static const char INVASION_TYPE_TAGS[MAX_TAG_TYPES][24] = {
@@ -152,6 +154,12 @@ static void scen_xml_start_event_element(const char** attributes)
         }
         if (strcmp(attributes[i], SCEN_XML_FILE_ATTRIBUTES[1][1][6]) == 0) {
             scenario_data.xml.current_event.event_data.favor_gained = string_to_int(string_from_ascii(attributes[i + 1]));
+        }
+        if (strcmp(attributes[i], SCEN_XML_FILE_ATTRIBUTES[1][1][7]) == 0) {
+            scenario_data.xml.current_event.event_data.size = string_to_int(string_from_ascii(attributes[i + 1]));
+        }
+        if (strcmp(attributes[i], SCEN_XML_FILE_ATTRIBUTES[1][1][8]) == 0) {
+            strcpy(scenario_data.xml.current_event.event_data.god, string_from_ascii(attributes[i + 1]));
         }
     }
 }
