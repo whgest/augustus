@@ -2,6 +2,7 @@
 
 #include "city/resource.h"
 #include "core/events.h"
+#include "empire/city.h"
 #include "empire/trade_route.h"
 #include "game/difficulty.h"
 #include "game/settings.h"
@@ -470,13 +471,21 @@ void scenario_settings_init(void)
 void scenario_settings_init_mission(void)
 {
     scenario.settings.starting_favor = difficulty_starting_favor();
-    scenario.settings.starting_personal_savings = setting_personal_savings_for_mission(scenario.settings.campaign_rank);
+    scenario.settings.starting_personal_savings =
+        setting_personal_savings_for_mission(scenario.settings.campaign_rank);
 }
 
 void scenario_fix_patch_trade(int mission_id) {
-    // Damascus, allow import of marble
+    // Damascus, allow import of marble and marble buildings
     if (mission_id == 15) {
-        trade_route_init(1, RESOURCE_MARBLE, 15);
+        empire_city_force_sell(1, RESOURCE_MARBLE);
+        trade_route_init(1, RESOURCE_MARBLE, 25);        
+        scenario.allowed_buildings[ALLOWED_BUILDING_LARGE_TEMPLES] = 1;
+        scenario.allowed_buildings[ALLOWED_BUILDING_ORACLE] = 1;
+    // Caesarea, allow import of clay (for monuments)
+    } else if (mission_id == 14) {
+        empire_city_force_sell(3, RESOURCE_CLAY);
+        trade_route_init(3, RESOURCE_CLAY, 15);
     }
 }
 
@@ -498,7 +507,8 @@ void scenario_settings_save_state(buffer *part1, buffer *part2, buffer *part3, b
     buffer_write_raw(scenario_name, scenario.scenario_name, MAX_SCENARIO_NAME);
 }
 
-void scenario_settings_load_state(buffer *part1, buffer *part2, buffer *part3, buffer *player_name, buffer *scenario_name)
+void scenario_settings_load_state(
+    buffer *part1, buffer *part2, buffer *part3, buffer *player_name, buffer *scenario_name)
 {
     scenario.settings.campaign_mission = buffer_read_i32(part1);
 

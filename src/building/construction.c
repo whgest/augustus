@@ -18,7 +18,6 @@
 #include "core/calc.h"
 #include "core/config.h"
 #include "core/image.h"
-#include "core/mods.h"
 #include "figure/formation.h"
 #include "game/undo.h"
 #include "graphics/window.h"
@@ -35,6 +34,9 @@
 #include "map/terrain.h"
 #include "map/tiles.h"
 #include "map/water.h"
+#include "mods/mods.h"
+
+#define PATH_ROTATE_OFFSET 56
 
 struct reservoir_info {
     int cost;
@@ -62,6 +64,7 @@ static struct {
         int tree;
         int water;
         int wall;
+        int distant_water;
     } required_terrain;
     int draw_as_constructing;
     int start_offset_x_view;
@@ -209,6 +212,7 @@ static int place_draggable_building(int x_start, int y_start, int x_end, int y_e
         }
     }
 
+    map_routing_update_land();
     return items_placed;
 }
 
@@ -241,10 +245,12 @@ static int place_reservoir_and_aqueducts(int measure_only, int x_start, int y_st
     } else {
         info->place_reservoir_at_end = PLACE_RESERVOIR_BLOCKED;
     }
-    if (info->place_reservoir_at_start == PLACE_RESERVOIR_BLOCKED || info->place_reservoir_at_end == PLACE_RESERVOIR_BLOCKED) {
+    if (info->place_reservoir_at_start == PLACE_RESERVOIR_BLOCKED
+        || info->place_reservoir_at_end == PLACE_RESERVOIR_BLOCKED) {
         return 0;
     }
-    if (info->place_reservoir_at_start == PLACE_RESERVOIR_YES && info->place_reservoir_at_end == PLACE_RESERVOIR_YES && distance < 3) {
+    if (info->place_reservoir_at_start == PLACE_RESERVOIR_YES
+        && info->place_reservoir_at_end == PLACE_RESERVOIR_YES && distance < 3) {
         return 0;
     }
     if (!distance) {
@@ -323,6 +329,7 @@ void building_construction_set_type(building_type type)
         data.required_terrain.tree = 0;
         data.required_terrain.rock = 0;
         data.required_terrain.meadow = 0;
+        data.required_terrain.distant_water = 0;
         data.start.grid_offset = 0;
 
         switch (type) {
@@ -353,6 +360,8 @@ void building_construction_set_type(building_type type)
             case BUILDING_MENU_LARGE_TEMPLES:
                 data.sub_type = BUILDING_LARGE_TEMPLE_CERES;
                 break;
+            case BUILDING_LIGHTHOUSE:
+                data.required_terrain.distant_water = 1;
             default:
                 break;
         }
@@ -414,14 +423,17 @@ void building_construction_start(int x, int y, int grid_offset)
         int can_start = 1;
         switch (data.type) {
             case BUILDING_ROAD:
-                can_start = map_routing_calculate_distances_for_building(ROUTED_BUILDING_ROAD, data.start.x, data.start.y);
+                can_start = map_routing_calculate_distances_for_building(
+                    ROUTED_BUILDING_ROAD, data.start.x, data.start.y);
                 break;
             case BUILDING_AQUEDUCT:
             case BUILDING_DRAGGABLE_RESERVOIR:
-                can_start = map_routing_calculate_distances_for_building(ROUTED_BUILDING_AQUEDUCT, data.start.x, data.start.y);
+                can_start = map_routing_calculate_distances_for_building(
+                    ROUTED_BUILDING_AQUEDUCT, data.start.x, data.start.y);
                 break;
             case BUILDING_WALL:
-                can_start = map_routing_calculate_distances_for_building(ROUTED_BUILDING_WALL, data.start.x, data.start.y);
+                can_start = map_routing_calculate_distances_for_building(
+                    ROUTED_BUILDING_WALL, data.start.x, data.start.y);
                 break;
             default:
                 break;
@@ -514,8 +526,14 @@ void building_construction_update(int x, int y, int grid_offset)
         int items_placed = place_garden(data.start.x, data.start.y, x, y);
         if (items_placed >= 0) current_cost *= items_placed;
     }
-    else if (type >= BUILDING_PINE_TREE && type <= BUILDING_DATE_PATH) {
+    else if (type >= BUILDING_PINE_TREE && type <= BUILDING_DATE_TREE) {
         int image_id = mods_get_group_id("Areldir", "Aesthetics") + (type - BUILDING_PINE_TREE);
+        int items_placed = plot_draggable_building(data.start.x, data.start.y, x, y, type, image_id);
+        if (items_placed >= 0) current_cost *= items_placed;
+    }
+    else if (type >= BUILDING_PINE_PATH && type <= BUILDING_DATE_PATH) {
+        int rotation = building_rotation_get_rotation();
+        int image_id = mods_get_group_id("Areldir", "Aesthetics") + (type - BUILDING_PINE_TREE) + (rotation % 2 * PATH_ROTATE_OFFSET);
         int items_placed = plot_draggable_building(data.start.x, data.start.y, x, y, type, image_id); 
         if (items_placed >= 0) current_cost *= items_placed;
     } else if (type == BUILDING_LOW_BRIDGE || type == BUILDING_SHIP_BRIDGE) {
@@ -567,7 +585,7 @@ void building_construction_update(int x, int y, int grid_offset)
             data.draw_as_constructing = 1;
         }
     } else if (data.required_terrain.meadow || data.required_terrain.rock || data.required_terrain.tree ||
-            data.required_terrain.water || data.required_terrain.wall) {
+            data.required_terrain.water || data.required_terrain.wall || data.required_terrain.distant_water) {
         // never mark as constructing
     } else {
         if (!(type == BUILDING_SENATE_UPGRADED && city_buildings_has_senate()) &&
@@ -622,7 +640,8 @@ void building_construction_place(void)
         city_warning_show(WARNING_OUT_OF_MONEY);
         return;
     }
-    if (type >= BUILDING_LARGE_TEMPLE_CERES && type <= BUILDING_LARGE_TEMPLE_VENUS && city_resource_count(RESOURCE_MARBLE) < 2) {
+    if (type >= BUILDING_LARGE_TEMPLE_CERES && type <= BUILDING_LARGE_TEMPLE_VENUS
+        && city_resource_count(RESOURCE_MARBLE) < 2) {
         map_property_clear_constructing_and_deleted();
         city_warning_show(WARNING_MARBLE_NEEDED_LARGE_TEMPLE);
         return;
@@ -700,15 +719,18 @@ void building_construction_place(void)
         if (info.place_reservoir_at_start == PLACE_RESERVOIR_YES) {
             building *reservoir = building_create(BUILDING_RESERVOIR, x_start - 1, y_start - 1);
             game_undo_add_building(reservoir);
-            map_building_tiles_add(reservoir->id, x_start-1, y_start-1, 3, image_group(GROUP_BUILDING_RESERVOIR), TERRAIN_BUILDING);
+            map_building_tiles_add(reservoir->id, x_start-1, y_start-1, 3,
+                image_group(GROUP_BUILDING_RESERVOIR), TERRAIN_BUILDING);
             map_aqueduct_set(map_grid_offset(x_start-1, y_start-1), 0);
         }
         if (info.place_reservoir_at_end == PLACE_RESERVOIR_YES) {
             building *reservoir = building_create(BUILDING_RESERVOIR, x_end - 1, y_end - 1);
             game_undo_add_building(reservoir);
-            map_building_tiles_add(reservoir->id, x_end-1, y_end-1, 3, image_group(GROUP_BUILDING_RESERVOIR), TERRAIN_BUILDING);
+            map_building_tiles_add(reservoir->id, x_end-1, y_end-1, 3,
+                image_group(GROUP_BUILDING_RESERVOIR), TERRAIN_BUILDING);
             map_aqueduct_set(map_grid_offset(x_end-1, y_end-1), 0);
-            if (!map_terrain_exists_tile_in_area_with_type(x_start - 2, y_start - 2, 5, TERRAIN_WATER) && info.place_reservoir_at_start == PLACE_RESERVOIR_NO) {
+            if (!map_terrain_exists_tile_in_area_with_type(x_start - 2, y_start - 2, 5, TERRAIN_WATER)
+                && info.place_reservoir_at_start == PLACE_RESERVOIR_NO) {
                 building_construction_warning_check_reservoir(BUILDING_RESERVOIR);
             }
         }
@@ -716,9 +738,13 @@ void building_construction_place(void)
         map_tiles_update_all_aqueducts(0);
         map_routing_update_land();
     }
-    else if (type >= BUILDING_PINE_TREE && type <= BUILDING_DATE_PATH) {
-        // this is a poor but functional mapping of btype to image id, replace when properties are refactored
+    else if (type >= BUILDING_PINE_TREE && type <= BUILDING_DATE_TREE) {
         int image_id = mods_get_group_id("Areldir", "Aesthetics") + (type - BUILDING_PINE_TREE);
+        placement_cost *= place_draggable_building(x_start, y_start, x_end, y_end, type, image_id);
+    }
+    else if (type >= BUILDING_PINE_PATH && type <= BUILDING_DATE_PATH) {
+        int rotation = building_rotation_get_rotation();
+        int image_id = mods_get_group_id("Areldir", "Aesthetics") + (type - BUILDING_PINE_TREE) + (rotation % 2 * PATH_ROTATE_OFFSET);
         placement_cost *= place_draggable_building(x_start, y_start, x_end, y_end, type, image_id);
     } else if (type == BUILDING_HOUSE_VACANT_LOT) {
         placement_cost *= place_houses(0, x_start, y_start, x_end, y_end);
@@ -777,6 +803,11 @@ int building_construction_can_place_on_terrain(int x, int y, int *warning_id)
     } else if (data.required_terrain.wall) {
         if (!map_terrain_all_tiles_in_radius_are(x, y, 2, 0, TERRAIN_WALL)) {
             set_warning(warning_id, WARNING_WALL_NEEDED);
+            return 0;
+        }
+    } else if (data.required_terrain.distant_water) {
+        if (!map_terrain_exists_tile_in_radius_with_type(x, y, 3, 9, TERRAIN_WATER)) {
+            set_warning(warning_id, WARNING_WATER_NEEDED_FOR_LIGHTHOUSE);
             return 0;
         }
     }

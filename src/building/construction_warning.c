@@ -54,6 +54,7 @@ static void check_road_access(int type, int x, int y, int size)
         case BUILDING_PAVILION_ORANGE:
         case BUILDING_PAVILION_YELLOW:
         case BUILDING_PAVILION_GREEN:
+        case BUILDING_OBELISK:
         case BUILDING_GATEHOUSE:
         case BUILDING_ROADBLOCK:
         case BUILDING_TRIUMPHAL_ARCH:
@@ -61,7 +62,7 @@ static void check_road_access(int type, int x, int y, int size)
         case BUILDING_FORT:
         case BUILDING_FORT_LEGIONARIES:
         case BUILDING_FORT_JAVELIN:
-        case BUILDING_FORT_MOUNTED:
+        case BUILDING_FORT_MOUNTED:        
             return;
     }
 
@@ -123,7 +124,7 @@ static void check_market(int type)
 static void check_barracks(int type)
 {
     if (!has_warning) {
-        if (building_is_fort(type) && building_count_active(BUILDING_BARRACKS) <= 0) {
+        if (building_is_fort(type) && building_count_active(BUILDING_BARRACKS) <= 0 && building_count_active(BUILDING_GRAND_TEMPLE_MARS) <= 0) {
             show(WARNING_BUILD_BARRACKS);
         }
     }

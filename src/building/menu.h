@@ -25,7 +25,10 @@ typedef enum {
     BUILD_MENU_PARKS = 18,
     BUILD_MENU_TREES = 19,
     BUILD_MENU_PATHS = 20,
-    BUILD_MENU_MAX = 21
+    BUILD_MENU_GRAND_TEMPLES = 21,
+    BUILD_MENU_STATUES =22,
+    BUILD_MENU_GOV_RES = 23,
+    BUILD_MENU_MAX = 24
 } build_menu_group;
 
 void building_menu_enable_all(void);

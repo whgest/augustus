@@ -318,6 +318,7 @@ message_advisor city_message_get_advisor(city_message_type message_type)
         case MESSAGE_LOCAL_UPRISING:
         case MESSAGE_BARBARIAN_ATTACK:
         case MESSAGE_CAESAR_ARMY_ATTACK:
+        case MESSAGE_ENEMY_ARMY_ATTACK:
         case MESSAGE_DISTANT_BATTLE:
         case MESSAGE_ENEMIES_CLOSING:
         case MESSAGE_ENEMIES_AT_THE_DOOR:
@@ -348,6 +349,10 @@ message_advisor city_message_get_advisor(city_message_type message_type)
         case MESSAGE_HEALTH_DISEASE:
         case MESSAGE_HEALTH_PESTILENCE:
             return MESSAGE_ADVISOR_HEALTH;
+
+        case MESSAGE_GODS_UNHAPPY:
+        case MESSAGE_GODS_WRATHFUL:
+            return MESSAGE_ADVISOR_RELIGION;
 
         default:
             return MESSAGE_ADVISOR_NONE;

@@ -171,6 +171,9 @@ static void draw_menu_buttons(void)
         if (type == BUILDING_FORT) {
             cost = 0;
         }
+        if (type == BUILDING_MENU_GRAND_TEMPLES) {
+            cost = 0;
+        }
         if (type == BUILDING_MENU_SMALL_TEMPLES && data.selected_submenu == BUILD_MENU_SMALL_TEMPLES) {
             cost = model_get_building(BUILDING_SMALL_TEMPLE_CERES)->cost;
         }
@@ -243,6 +246,9 @@ static int set_submenu_for_type(building_type type)
             break;
         case BUILDING_FORT:
             data.selected_submenu = BUILD_MENU_FORTS;
+			break;
+		case BUILDING_MENU_GRAND_TEMPLES:
+			data.selected_submenu = BUILD_MENU_GRAND_TEMPLES;
             break;
         case BUILDING_MENU_PARKS:
             data.selected_submenu = BUILD_MENU_PARKS;
@@ -252,6 +258,12 @@ static int set_submenu_for_type(building_type type)
             break;
         case BUILDING_MENU_PATHS:
             data.selected_submenu = BUILD_MENU_PATHS;
+            break;
+        case BUILDING_MENU_GOV_RES:
+            data.selected_submenu = BUILD_MENU_GOV_RES;
+            break;
+        case BUILDING_MENU_STATUES:
+            data.selected_submenu = BUILD_MENU_STATUES;
             break;
         default:
             return 0;

@@ -51,7 +51,8 @@
 #define COMPRESS_BUFFER_SIZE 3000000
 #define UNCOMPRESSED 0x80000000
 
-static const int SAVE_GAME_VERSION = 0x76;
+static const int SAVE_GAME_CURRENT_VERSION = 0x77;
+static const int SAVE_GAME_SMALLER_IMAGE_ID_VERSION = 0x76;
 
 static char compress_buffer[COMPRESS_BUFFER_SIZE];
 
@@ -327,7 +328,7 @@ static void init_savegame_data_expanded(void)
     savegame_state *state = &savegame_data.state;
     state->scenario_campaign_mission = create_savegame_piece(4, 0);
     state->file_version = create_savegame_piece(4, 0);
-    state->image_grid = create_savegame_piece(52488, 1);
+    state->image_grid = create_savegame_piece(104976, 1);
     state->edge_grid = create_savegame_piece(26244, 1);
     state->building_grid = create_savegame_piece(52488, 1);
     state->terrain_grid = create_savegame_piece(52488, 1);
@@ -412,7 +413,7 @@ static void init_savegame_data_expanded(void)
 
 static void scenario_load_from_state(scenario_state *file)
 {
-    map_image_load_state(file->graphic_ids);
+    map_image_load_state_legacy(file->graphic_ids);
     map_terrain_load_state(file->terrain);
     map_property_load_state(file->bitfields, file->edge);
     map_random_load_state(file->random);
@@ -428,7 +429,7 @@ static void scenario_load_from_state(scenario_state *file)
 
 static void scenario_save_to_state(scenario_state *file)
 {
-    map_image_save_state(file->graphic_ids);
+    map_image_save_state_legacy(file->graphic_ids);
     map_terrain_save_state(file->terrain);
     map_property_save_state(file->bitfields, file->edge);
     map_random_save_state(file->random);
@@ -451,8 +452,11 @@ static void savegame_load_from_state(savegame_state *state)
                                  state->scenario_is_custom,
                                  state->player_name,
                                  state->scenario_name);
-
-    map_image_load_state(state->image_grid);
+    if (savegame_version <= SAVE_GAME_SMALLER_IMAGE_ID_VERSION) {
+        map_image_load_state_legacy(state->image_grid);
+    } else {
+        map_image_load_state(state->image_grid);
+    }
     map_building_load_state(state->building_grid, state->building_damage_grid);
     map_terrain_load_state(state->terrain_grid);
     map_aqueduct_load_state(state->aqueduct_grid, state->aqueduct_backup_grid);
@@ -616,7 +620,8 @@ int game_file_io_read_scenario(const char *filename)
         return 0;
     }
     for (int i = 0; i < scenario_data.num_pieces; i++) {
-        if (fread(scenario_data.pieces[i].buf.data, 1, scenario_data.pieces[i].buf.size, fp) != scenario_data.pieces[i].buf.size) {
+        size_t read_size = fread(scenario_data.pieces[i].buf.data, 1, scenario_data.pieces[i].buf.size, fp);
+        if (read_size != scenario_data.pieces[i].buf.size) {
             log_error("Unable to load scenario", filename, 0);
             file_close(fp);
             return 0;
@@ -677,7 +682,8 @@ static int read_compressed_chunk(FILE *fp, void *buffer, int bytes_to_read)
             return 0;
         }
     } else {
-        if (fread(compress_buffer, 1, input_size, fp) != input_size || !zip_decompress(compress_buffer, input_size, buffer, &bytes_to_read)) {
+        if (fread(compress_buffer, 1, input_size, fp) != input_size
+            || !zip_decompress(compress_buffer, input_size, buffer, &bytes_to_read)) {
             return 0;
         }
     }
@@ -767,7 +773,7 @@ int game_file_io_write_saved_game(const char *filename)
     init_savegame_data_expanded();
 
     log_info("Saving game", filename, 0);
-    savegame_version = SAVE_GAME_VERSION;
+    savegame_version = SAVE_GAME_CURRENT_VERSION;
     savegame_save_to_state(&savegame_data.state);
 
     FILE *fp = file_open(filename, "wb");
