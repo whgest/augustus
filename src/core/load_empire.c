@@ -1,4 +1,5 @@
-#include "mods.h"
+#include "mods/mods.h"
+#include "mods/xml.h"
 
 #include "core/calc.h"
 #include "core/dir.h"

@@ -114,18 +114,6 @@ void city_festival_schedule(void)
 
 void festival_sentiment_and_deity(int size, int god_id)
 {
-    festival_sentiment_and_deity(city_data.festival.planned.size, city_data.festival.planned.god);
-    switch (city_data.festival.planned.size) {
-        case FESTIVAL_SMALL: city_message_post(1, MESSAGE_SMALL_FESTIVAL, 0, 0); break;
-        case FESTIVAL_LARGE: city_message_post(1, MESSAGE_LARGE_FESTIVAL, 0, 0); break;
-        case FESTIVAL_GRAND: city_message_post(1, MESSAGE_GRAND_FESTIVAL, 0, 0); break;
-    }
-    city_data.festival.planned.size = FESTIVAL_NONE;
-    city_data.festival.planned.months_to_go = 0;
-}
-
-void festival_sentiment_and_deity(int size, int god_id)
-{
     if (city_data.festival.first_festival_effect_months <= 0) {
         city_data.festival.first_festival_effect_months = 12;
         switch (size) {
@@ -151,15 +139,15 @@ static void throw_auto_festival(int god_id) {
     city_message_post(0, MESSAGE_AUTO_FESTIVAL_CERES + god_id, 0, 0);
 }
 
-//static void throw_party(void)
-//{
-//    festival_sentiment_and_deity(city_data.festival.planned.size, city_data.festival.planned.god);
-//    switch (city_data.festival.planned.size) {
-//    case FESTIVAL_SMALL: city_message_post(1, MESSAGE_SMALL_FESTIVAL, 0, 0); break;
-//    case FESTIVAL_LARGE: city_message_post(1, MESSAGE_LARGE_FESTIVAL, 0, 0); break;
-//    case FESTIVAL_GRAND: city_message_post(1, MESSAGE_GRAND_FESTIVAL, 0, 0); break;
-//    }
-//}
+static void throw_party(void)
+{
+    festival_sentiment_and_deity(city_data.festival.planned.size, city_data.festival.planned.god);
+    switch (city_data.festival.planned.size) {
+    case FESTIVAL_SMALL: city_message_post(1, MESSAGE_SMALL_FESTIVAL, 0, 0); break;
+    case FESTIVAL_LARGE: city_message_post(1, MESSAGE_LARGE_FESTIVAL, 0, 0); break;
+    case FESTIVAL_GRAND: city_message_post(1, MESSAGE_GRAND_FESTIVAL, 0, 0); break;
+    }
+}
 
 void city_festival_update(void)
 {

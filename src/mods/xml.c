@@ -13,12 +13,7 @@
 
 #include <string.h>
 
-#define XML_BUFFER_SIZE 1024
-#define XML_MAX_DEPTH 3
-#define XML_MAX_ELEMENTS_PER_DEPTH 2
-#define XML_MAX_ATTRIBUTES 8
-#define XML_TAG_MAX_LENGTH 12
-#define XML_MAX_IMAGE_INDEXES 256
+
 
 static const char XML_FILE_ELEMENTS[XML_MAX_DEPTH][XML_MAX_ELEMENTS_PER_DEPTH][XML_TAG_MAX_LENGTH] = { { "mod" }, { "image" }, { "layer", "animation" } };
 static const char XML_FILE_ATTRIBUTES[XML_MAX_DEPTH][XML_MAX_ELEMENTS_PER_DEPTH][XML_MAX_ATTRIBUTES][XML_TAG_MAX_LENGTH] = {

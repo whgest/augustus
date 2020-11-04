@@ -1,4 +1,4 @@
-#include "time.h"
+#include "game/time.h"
 #include "events.h"
 #include "city/constants.h"
 #include "city/festival.h"
@@ -29,7 +29,7 @@ static god_mapping god_mappings[] = {
 };
 
 int get_months_passed() {
-	return get_total_months();
+	return game_time_total_months();
 }
 
 int get_city_id_from_name(custom_event_data event_data) {
@@ -230,7 +230,7 @@ void start_festival(custom_event_data event_data) {
 			god_id = god_mappings[i].god_id;
 		}
 	}
-	festival_sentiment_and_deity(event_data.size, god_id);
+	festival_sentiment_and_deity(event_data.size, event_data.god);
 	if (event_data.message_id) {
 		city_message_post(1, event_data.message_id, 0, 0);
 	}
@@ -372,7 +372,7 @@ void load_all_custom_messages() {
 				m->custom_sound_filename = custom_events[i].event_data.sound;
 			}
 
-			custom_events[i].event_data.message_id = MESSAGE_CUSTOM_FROM_XML + total_custom_messages;
+			custom_events[i].event_data.message_id = MESSAGE_MAX_KEY + total_custom_messages;
 			total_custom_messages++;
 		}
 	}	
